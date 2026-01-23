@@ -9,8 +9,9 @@
             --dark-bg: #080808;
             --light-bg: #ffffff;
             --transition-speed: 0.6s;
-            --desktop-max-width: 1400px; 
-            --desktop-padding: 60px;
+            /* 增大最大宽度限制，让大屏更舒展 */
+            --desktop-max-width: 1600px; 
+            --desktop-padding: 5vw; /* 使用视口单位，屏幕越大边距越大 */
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -26,7 +27,7 @@
         }
         body.light-mode { background-color: var(--light-bg); color: #000; }
 
-        /* --- 导航栏 --- */
+        /* --- 导航栏优化：全屏延伸 --- */
         .navbar { 
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
             background: rgba(8,8,8,0.7); backdrop-filter: blur(15px); transition: 0.4s; 
@@ -35,32 +36,34 @@
 
         .nav-container { 
             display: flex; justify-content: space-between; align-items: center; 
-            margin: 0 auto; max-width: var(--desktop-max-width); padding: 20px var(--desktop-padding);
+            margin: 0 auto; max-width: var(--desktop-max-width); padding: 25px var(--desktop-padding);
         }
         
         .logo { display: flex; gap: 4px; cursor: pointer; mix-blend-mode: difference; }
         .logo span { width: 6px; height: 6px; background: #fff; border-radius: 50%; }
 
         .nav-links { list-style: none; display: flex; gap: 45px; margin: 0; padding: 0; }
-        .nav-links a { text-decoration: none; color: #888; display: flex; flex-direction: column; align-items: center; transition: 0.3s; font-size: 0.85rem; letter-spacing: 2px;}
-        .nav-links a:hover span { color: #fff; }
-        body.light-mode .nav-links a:hover span { color: #000; }
+        .nav-links a { text-decoration: none; color: #888; transition: 0.3s; font-size: 0.85rem; letter-spacing: 2px;}
+        .nav-links a:hover { color: #fff; }
+        body.light-mode .nav-links a:hover { color: #000; }
 
-        /* --- 响应式布局容器 --- */
+        /* --- 布局容器 --- */
         #main-wrapper { margin: 0 auto; width: 100%; }
         .view-section { display: none; opacity: 0; width: 100%; padding-top: 140px; }
         .active-view { display: block; opacity: 1; animation: fadeIn 0.8s ease forwards; }
+        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        header { text-align: center; padding: 60px 20px 100px; }
-        header h1 { font-size: 3.5rem; letter-spacing: 20px; text-transform: uppercase; margin: 0; }
+        header { text-align: center; padding: 80px 20px 120px; }
+        header h1 { font-size: clamp(2rem, 5vw, 4rem); letter-spacing: 20px; text-transform: uppercase; margin: 0; }
         header p { font-size: 0.9rem; color: #666; letter-spacing: 6px; margin-top: 30px; }
 
-        /* --- 首页图片网格 --- */
+        /* --- 核心修改：动态网格 --- */
         .collections-grid { 
             display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 80px 60px; 
+            /* 电脑端默认3列，超大屏4列 */
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 60px 40px; 
             max-width: var(--desktop-max-width); 
             margin: 0 auto; 
             padding: 0 var(--desktop-padding) 120px; 
@@ -73,8 +76,8 @@
         .card-zh { font-size: 1.1rem; margin-bottom: 6px; }
         .card-en { font-size: 0.75rem; color: #666; letter-spacing: 1px; text-transform: uppercase; }
 
-        /* --- 详情页标签样式 (重要补回) --- */
-        .detail-wrapper { max-width: 1000px; margin: 0 auto; padding: 0 var(--desktop-padding) 120px; color: #000; }
+        /* --- 详情页优化 --- */
+        .detail-wrapper { max-width: 1100px; margin: 0 auto; padding: 0 var(--desktop-padding) 120px; }
         .meta-bar { 
             display: grid; grid-template-columns: repeat(4, 1fr); 
             gap: 20px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; 
@@ -85,9 +88,9 @@
         .meta-value { font-size: 0.9rem; color: #333; font-weight: 500; }
 
         .detail-gallery { display: flex; flex-direction: column; gap: 60px; margin-top: 60px; }
-        .detail-gallery img { width: 100%; height: auto; }
+        .detail-gallery img { width: 100%; height: auto; border-radius: 2px; }
 
-        /* --- 页脚与浏览量 --- */
+        /* --- 页脚优化 --- */
         .footer-contact { 
             padding: 100px var(--desktop-padding); 
             border-top: 1px solid rgba(128,128,128,0.1);
@@ -101,19 +104,30 @@
         .footer-left a { text-decoration: none; color: #666; font-size: 0.75rem; transition: 0.3s; }
         .footer-left a:hover { color: #fff; }
         body.light-mode .footer-left a:hover { color: #000; }
-        
         .page-views { font-family: monospace; font-size: 0.75rem; color: #444; letter-spacing: 1px; }
 
-        /* --- 移动端适配 --- */
+        /* --- 响应式断点控制 --- */
+        
+        /* 1. 中等屏幕 (平板/小笔记本当) 显示 2 列 */
+        @media (max-width: 1100px) {
+            .collections-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* 2. 移动端 (手机) 显示 1 列 */
         @media (max-width: 768px) {
             .nav-container { padding: 15px 20px; }
             .nav-links { gap: 20px; }
-            .nav-links a span { font-size: 0.75rem; }
-            header h1 { font-size: 1.8rem; letter-spacing: 6px; }
+            header { padding: 40px 20px 60px; }
+            header h1 { letter-spacing: 8px; }
             .collections-grid { grid-template-columns: 1fr; padding: 0 20px 80px; gap: 40px; }
             .meta-bar { grid-template-columns: 1fr 1fr; gap: 30px; }
             .footer-contact { flex-direction: column; gap: 30px; text-align: center; }
             .footer-left { flex-direction: column; gap: 15px; }
+        }
+        
+        /* 3. 针对超大屏增加列数 (可选) */
+        @media (min-width: 1800px) {
+            .collections-grid { grid-template-columns: repeat(4, 1fr); }
         }
     </style>
 </head>
@@ -123,10 +137,10 @@
         <div class="nav-container">
             <div class="logo" onclick="window.location.hash=''"><span></span><span></span><span></span></div>
             <ul class="nav-links">
-                <li><a href="#"><span>首页</span></a></li>
-                <li><a href="#main-grid"><span>合集</span></a></li>
-                <li><a href="#about"><span>关于</span></a></li>
-                <li><a href="#contact-anchor"><span>联系</span></a></li>
+                <li><a href="#">首页</a></li>
+                <li><a href="#main-grid">合集</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#contact-anchor">联系</a></li>
             </ul>
         </div>
     </nav>
@@ -144,14 +158,14 @@
             <div class="detail-wrapper">
                 <div style="padding: 20px 0;"><a onclick="window.location.hash=''" style="cursor:pointer; font-size:0.75rem; color:#888;">← BACK TO HOME</a></div>
                 <h1 style="font-size: 2.5rem; margin: 20px 0;">关于 VISION ARCHIVE</h1>
-                <p style="color: #666; line-height: 2;">这里是你的个人摄影存档空间。专注于通过镜头捕捉光影与空间的细微关系，重新建立观察者对数字影像的真实感知。</p>
+                <p style="color: #666; line-height: 2; font-size: 1.1rem;">这里是你的个人摄影存档空间。专注于通过镜头捕捉光影与空间的细微关系，重新建立观察者对数字影像的真实感知。</p>
             </div>
         </main>
 
         <main id="detail-page" class="view-section">
             <div class="detail-wrapper">
                 <div style="padding: 20px 0;"><a onclick="window.location.hash=''" style="cursor:pointer; font-size:0.75rem; color:#888;">← BACK TO PROJECTS</a></div>
-                <h1 id="det-zh" style="font-size: 2.8rem; margin: 10px 0;">项目名称</h1>
+                <h1 id="det-zh" style="font-size: clamp(1.8rem, 4vw, 2.8rem); margin: 10px 0;">项目名称</h1>
                 
                 <div class="meta-bar">
                     <div class="meta-item"><span class="meta-label">类别 / CATEGORY</span><span id="det-cat" class="meta-value">-</span></div>
@@ -176,7 +190,6 @@
     </div>
 
     <script>
-        // 数据增加 Role 字段
         const collections = [
             { zh: "荒野之境", en: "Silence of Wild", cat: "Nature", loc: "Turkey", yr: "2023", role: "Photographer", intro: "探索自然界中被遗忘的寂静角落。", images: ["1.jpg", "2.jpg"] },
             { zh: "瞬时街头", en: "Pulse of Street", cat: "Street", loc: "Tokyo", yr: "2024", role: "Digital Archive", intro: "捕捉城市脉动中的瞬时美学。", images: ["4.jpg", "5.jpg"] },
@@ -184,7 +197,6 @@
             { zh: "呼吸之间", en: "Breath of Life", cat: "Conceptual", loc: "Iceland", yr: "2022", role: "Visual Research", intro: "记录生命最原始的律动。", images: ["6.jpg", "7.jpg"] }
         ];
 
-        // 模拟浏览量增加
         function updateViews() {
             let views = parseInt(localStorage.getItem('page_views') || "12840");
             views += Math.floor(Math.random() * 5) + 1;
@@ -217,6 +229,7 @@
 
         function renderDetail(idx) {
             const data = collections[idx];
+            if(!data) return;
             document.getElementById('det-zh').innerText = data.zh;
             document.getElementById('det-cat').innerText = data.cat;
             document.getElementById('det-loc').innerText = data.loc;
