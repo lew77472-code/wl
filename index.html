@@ -9,13 +9,12 @@
             --dark-bg: #080808;
             --light-bg: #ffffff;
             --transition-speed: 0.6s;
-            --content-max-width: 1000px; 
-            --content-padding: 30px;      
+            --content-max-width: 1200px; 
+            --content-padding: 40px;      
         }
 
-        /* 基础重置 */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; } /* 平滑滚动 */
+        html { scroll-behavior: smooth; }
         
         html, body { 
             margin: 0; padding: 0; width: 100%; 
@@ -32,84 +31,101 @@
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
             background: rgba(8,8,8,0.7); backdrop-filter: blur(15px); transition: 0.4s; 
         }
-        .mode-mobile-wrapper .navbar { max-width: 420px; left: 50%; transform: translateX(-50%); }
+        .mode-mobile-active .navbar { max-width: 420px; left: 50%; transform: translateX(-50%); }
         body.light-mode .navbar { background: rgba(255,255,255,0.8); border-bottom: 1px solid #f0f0f0; }
 
-        .nav-container { max-width: var(--content-max-width); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 12px var(--content-padding); }
+        .nav-container { max-width: var(--content-max-width); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 15px var(--content-padding); }
         .logo { display: flex; gap: 4px; cursor: pointer; mix-blend-mode: difference; }
         .logo span { width: 5px; height: 5px; background: #fff; border-radius: 50%; }
 
-        .nav-links { list-style: none; display: flex; gap: 25px; margin: 0; padding: 0; }
-        .nav-links a { text-decoration: none; color: #888; display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; letter-spacing: 1px; transition: 0.3s; }
-        .nav-links a small { opacity: 0; transform: translateY(4px); transition: 0.3s; font-size: 0.55rem; color: #999; text-transform: uppercase; margin-top: 2px;}
+        .nav-links { list-style: none; display: flex; gap: 35px; margin: 0; padding: 0; }
+        .nav-links a { text-decoration: none; color: #888; display: flex; flex-direction: column; align-items: center; font-size: 0.8rem; letter-spacing: 2px; transition: 0.3s; }
+        .nav-links a small { opacity: 0; transform: translateY(4px); transition: 0.3s; font-size: 0.55rem; color: #999; text-transform: uppercase; margin-top: 4px;}
         .nav-links a:hover span { color: #fff; }
         body.light-mode .nav-links a:hover span { color: #000; }
         .nav-links a:hover small { opacity: 1; transform: translateY(0); }
 
         /* --- 框架逻辑 --- */
-        #main-wrapper { margin: 0 auto; min-height: 100vh; width: 100%; transition: max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .mode-mobile-wrapper { max-width: 420px !important; border-left: 1px solid rgba(128,128,128,0.2); border-right: 1px solid rgba(128,128,128,0.2); }
+        #main-wrapper { 
+            margin: 0 auto; 
+            min-height: 100vh; 
+            width: 100%; 
+            max-width: 100%;
+            transition: max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        
+        .mode-mobile-active#main-wrapper { 
+            max-width: 420px !important; 
+            border-left: 1px solid rgba(128,128,128,0.2); 
+            border-right: 1px solid rgba(128,128,128,0.2); 
+        }
         
         #device-toggle {
             position: fixed; bottom: 40px; right: 40px; z-index: 3000;
-            width: 46px; height: 46px; background: rgba(255, 255, 255, 0.1);
+            width: 50px; height: 50px; background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.5s; opacity: 0.4;
+            cursor: pointer; transition: 0.5s; opacity: 0.5;
         }
         #device-toggle:hover { opacity: 1; transform: scale(1.1); }
-        #device-toggle svg { width: 20px; height: 20px; fill: #888; }
+        #device-toggle svg { width: 22px; height: 22px; fill: #888; }
 
-        .view-section { padding-top: 120px; display: none; opacity: 0; width: 100%; }
+        .view-section { padding-top: 140px; display: none; opacity: 0; width: 100%; }
         .active-view { display: block; opacity: 1; animation: fadeIn 0.8s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 首页样式 --- */
-        header { text-align: center; padding: 20px 20px 80px; }
-        header h1 { font-size: 2.2rem; letter-spacing: 15px; text-transform: uppercase; margin: 0; }
-        header p { font-size: 0.8rem; color: #666; letter-spacing: 4px; margin-top: 25px; }
+        /* --- 首页网格 --- */
+        header { text-align: center; padding: 40px 20px 100px; }
+        header h1 { font-size: 3rem; letter-spacing: 20px; text-transform: uppercase; margin: 0; }
+        header p { font-size: 0.9rem; color: #666; letter-spacing: 6px; margin-top: 35px; }
 
         .collections-grid { 
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 60px 40px; 
-            max-width: var(--content-max-width); margin: 0 auto; padding: 0 var(--content-padding) 100px; 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr);
+            gap: 80px 50px; 
+            max-width: var(--content-max-width); 
+            margin: 0 auto; 
+            padding: 0 var(--content-padding) 120px; 
         }
         
-        .collection-card { cursor: pointer; width: 100%; }
-        .img-wrap { aspect-ratio: 3/4; overflow: hidden; background: #111; margin-bottom: 15px; }
-        .img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: 1.2s cubic-bezier(0.2, 0, 0.2, 1); filter: brightness(0.85); }
-        .collection-card:hover img { transform: scale(1.05); filter: brightness(1); }
-        .card-zh { font-size: 0.85rem; margin-bottom: 4px; }
-        .card-en { font-size: 0.7rem; color: #666; letter-spacing: 1px; }
-
-        /* --- 手机端适配 --- */
         @media (max-width: 768px) {
-            header h1 { font-size: 1.4rem; letter-spacing: 5px; } 
-            header p { font-size: 0.65rem; letter-spacing: 1px; }
-            .collections-grid { grid-template-columns: 1fr; gap: 40px; padding: 0 20px 80px; }
-            .view-section { padding-top: 90px; }
-            .nav-links { gap: 12px; }
-            .nav-links a small { display: none; } 
+            .collections-grid { grid-template-columns: 1fr; gap: 50px; padding: 0 25px 100px; }
+            header h1 { font-size: 1.8rem; letter-spacing: 8px; }
+            header p { font-size: 0.7rem; letter-spacing: 2px; }
+            .view-section { padding-top: 100px; }
+            .nav-links { gap: 15px; }
+            .nav-links a small { display: none; }
             #device-toggle { display: none; }
+            .footer-links { flex-direction: column; gap: 20px !important; }
         }
 
-        /* --- 详情与关于页组件 --- */
-        .detail-wrapper { max-width: 800px; margin: 0 auto; padding: 0 var(--content-padding) 100px; }
-        .meta-grid-about { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 25px 0; margin: 30px 0; }
-        .about-section-h3 { font-size: 1rem; border-bottom: 1px solid #333; padding-bottom: 8px; margin-top: 50px; margin-bottom: 20px; color: #000; letter-spacing: 1px; }
-        .content-list-about { list-style: none; padding: 0; color: #555; font-size: 0.85rem; line-height: 2.2; }
-        .tag-about { background: #f4f4f4; color: #888; padding: 5px 12px; font-size: 0.65rem; border-radius: 3px; display: inline-block; margin-right: 5px; }
+        .collection-card { cursor: pointer; width: 100%; }
+        .img-wrap { aspect-ratio: 3/4; overflow: hidden; background: #111; margin-bottom: 20px; }
+        .img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: 1.5s cubic-bezier(0.2, 0, 0.2, 1); filter: brightness(0.8); }
+        .collection-card:hover img { transform: scale(1.05); filter: brightness(1); }
+        .card-zh { font-size: 1rem; margin-bottom: 6px; letter-spacing: 1px; }
+        .card-en { font-size: 0.75rem; color: #666; letter-spacing: 1px; text-transform: uppercase; }
 
-        .project-meta-bar { display: flex; flex-wrap: wrap; gap: 20px 40px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 20px 0; margin: 30px 0; }
-        .meta-item { font-size: 0.75rem; color: #666; }
-        .meta-label { font-weight: bold; color: #000; margin-right: 8px; }
+        /* --- 页脚与联系方式 --- */
+        .footer-contact { padding: 120px 20px; text-align: center; border-top: 1px solid rgba(128,128,128,0.1); }
+        .footer-links { display: flex; justify-content: center; align-items: center; gap: 60px; }
+        .footer-links a { 
+            text-decoration: none; 
+            color: #666; 
+            font-size: 0.75rem; 
+            letter-spacing: 1px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .footer-links a:hover { color: #fff; }
+        body.light-mode .footer-links a:hover { color: #000; }
 
-        .detail-gallery { display: flex; flex-direction: column; gap: 40px; }
-        .detail-gallery img { width: 100%; height: auto; object-fit: contain; opacity: 0; transition: 1s; }
-        .detail-gallery img.loaded { opacity: 1; }
-
-        .footer-contact { padding: 100px 20px; text-align: center; border-top: 1px solid rgba(128,128,128,0.1); }
-        .footer-links { display: flex; justify-content: center; gap: 40px; }
-        .footer-links a { text-decoration: none; color: #666; font-size: 0.7rem; letter-spacing: 1px; }
+        /* 关于 & 详情 */
+        .detail-wrapper { max-width: 900px; margin: 0 auto; padding: 0 var(--content-padding) 120px; }
+        .about-section-h3 { font-size: 1.2rem; border-bottom: 1px solid #333; padding-bottom: 12px; margin-top: 60px; margin-bottom: 25px; color: #000; }
+        .content-list-about { list-style: none; padding: 0; color: #555; font-size: 0.95rem; line-height: 2.2; }
     </style>
 </head>
 <body id="page-body">
@@ -141,22 +157,9 @@
 
         <main id="about-page" class="view-section">
             <div class="detail-wrapper" style="color:#000">
-                <div style="padding: 20px 0;"><a onclick="window.location.hash=''" style="cursor:pointer; font-size:0.7rem; color:#888;">← BACK TO HOME</a></div>
-                <h1 style="font-size: 2.2rem; margin: 10px 0;">关于 VISION ARCHIVE <span style="font-weight:200; font-size:1.2rem;">↗</span></h1>
-                <p style="color: #888; font-family: monospace; font-size: 0.75rem; letter-spacing: 1px;">WebXR · Three.js · Photogrammetry · Spatial Data</p>
-
-                <div class="meta-grid-about">
-                    <div class="meta-item"><span class="meta-label">类别:</span> 视觉研究</div>
-                    <div class="meta-item"><span class="meta-label">地点:</span> Shanghai, China</div>
-                    <div class="meta-item"><span class="meta-label">年份:</span> 2024-2026</div>
-                    <div class="meta-item"><span class="meta-label">状态:</span> Active</div>
-                </div>
-
-                <div style="margin: 20px 0;">
-                    <span class="tag-about">archaeological visualization</span>
-                    <span class="tag-about">memory</span>
-                    <span class="tag-about">virtual reality</span>
-                </div>
+                <div style="padding: 20px 0;"><a onclick="window.location.hash=''" style="cursor:pointer; font-size:0.75rem; color:#888;">← BACK TO HOME</a></div>
+                <h1 style="font-size: 2.8rem; margin: 20px 0;">关于 VISION ARCHIVE <span style="font-weight:200; font-size:1.5rem;">↗</span></h1>
+                <p style="color: #888; font-family: monospace; font-size: 0.8rem; letter-spacing: 1px;">WebXR · Three.js · Photogrammetry</p>
 
                 <h3 class="about-section-h3">核心贡献</h3>
                 <ul class="content-list-about">
@@ -169,35 +172,28 @@
 
         <main id="detail-page" class="view-section">
             <div class="detail-wrapper" style="color:#000">
-                <div style="padding: 20px 0;"><a onclick="window.location.hash=''" style="cursor:pointer; font-size:0.7rem; color:#888;">← BACK TO PROJECTS</a></div>
-                <h1 id="det-zh" style="font-size: 2rem; margin: 10px 0;">项目名称</h1>
-                
-                <div class="project-meta-bar">
-                    <div class="meta-item"><span class="meta-label">类别:</span> <span id="det-category"></span></div>
-                    <div class="meta-item"><span class="meta-label">地点:</span> <span id="det-location"></span></div>
-                    <div class="meta-item"><span class="meta-label">年份:</span> <span id="det-year"></span></div>
-                </div>
-
-                <div id="det-intro" style="margin: 50px auto; font-style: italic; line-height: 2; color: #444; text-align: center;"></div>
-                <div class="detail-gallery" id="det-images"></div>
+                <div style="padding: 20px 0;"><a onclick="window.location.hash=''" style="cursor:pointer; font-size:0.75rem; color:#888;">← BACK TO PROJECTS</a></div>
+                <h1 id="det-zh" style="font-size: 2.5rem; margin: 15px 0;">项目名称</h1>
+                <div id="det-intro" style="margin: 60px auto; font-style: italic; line-height: 2.2; color: #444; text-align: center; font-size: 1.1rem;"></div>
+                <div class="detail-gallery" id="det-images" style="display:flex; flex-direction:column; gap:60px;"></div>
             </div>
         </main>
 
         <footer class="footer-contact" id="contact-anchor">
             <div class="footer-links">
                 <a href="#">@Vision Archive</a>
-                <a href="mailto:contact@visionarchive.me">contact@visionarchive.me</a>
+                <a href="mailto:contact@visionarchive.me">Email</a>
+                <a href="https://xhslink.com/m/52WU1ywxBjw" target="_blank">Xiaohongshu ↗</a>
             </div>
         </footer>
     </div>
 
     <script>
-        // 数据保持不变
         const collections = [
             { zh: "荒野之境", en: "Silence of Wild", cat: "Nature", loc: "Turkey", yr: "2023", intro: "探索自然界中被遗忘的寂静角落。", images: ["1.jpg", "2.jpg"] },
             { zh: "瞬时街头", en: "Pulse of Street", cat: "Street", loc: "Tokyo", yr: "2024", intro: "捕捉城市脉动中的瞬时美学。", images: ["4.jpg", "5.jpg"] },
-            { zh: "呼吸之间", en: "Breath of Life", cat: "Conceptual", loc: "Iceland", yr: "2022", intro: "记录生命最原始的律动。", images: ["6.jpg", "7.jpg"] },
-            { zh: "几何重塑", en: "Geometry Forms", cat: "Architecture", loc: "Berlin", yr: "2024", intro: "建筑与光影的几何解构。", images: ["9.jpg", "10.jpg"] }
+            { zh: "几何重塑", en: "Geometry Forms", cat: "Architecture", loc: "Berlin", yr: "2024", intro: "建筑与光影的几何解构。", images: ["9.jpg", "10.jpg"] },
+            { zh: "呼吸之间", en: "Breath of Life", cat: "Conceptual", loc: "Iceland", yr: "2022", intro: "记录生命最原始的律动。", images: ["6.jpg", "7.jpg"] }
         ];
 
         function handleRoute() {
@@ -206,8 +202,7 @@
             const about = document.getElementById('about-page');
             const detail = document.getElementById('detail-page');
 
-            // 如果是合集跳转，不进行视图切换，仅由CSS处理平滑滚动
-            if (hash === '#main-grid') {
+            if (hash === '#main-grid' || hash === '#contact-anchor') {
                 landing.classList.add('active-view');
                 document.body.classList.remove('light-mode');
                 return; 
@@ -237,17 +232,15 @@
         function renderDetail(idx) {
             const data = collections[idx];
             document.getElementById('det-zh').innerText = data.zh;
-            document.getElementById('det-category').innerText = data.cat;
-            document.getElementById('det-location').innerText = data.loc;
-            document.getElementById('det-year').innerText = data.yr;
             document.getElementById('det-intro').innerText = `“ ${data.intro} ”`;
-
             const gallery = document.getElementById('det-images');
             gallery.innerHTML = '';
             data.images.forEach(imgName => {
                 const img = document.createElement('img');
                 img.src = `images/${imgName}`;
-                img.onload = () => img.classList.add('loaded');
+                img.style.width = "100%";
+                img.style.height = "auto";
+                img.onload = () => img.style.opacity = "1";
                 gallery.appendChild(img);
             });
         }
@@ -267,7 +260,7 @@
 
         function toggleDisplayMode() {
             const wrapper = document.getElementById('main-wrapper');
-            const isMobile = wrapper.classList.toggle('mode-mobile-wrapper');
+            const isMobile = wrapper.classList.toggle('mode-mobile-active');
             document.getElementById('icon-path').setAttribute('d', isMobile ? 'M20,18H4V4H20M20,2H4A2,2 0 0,0 2,4V18A2,2 0 0,0 4,20H9L7,22H17L15,20H20A2,2 0 0,0 22,18V4C22,2.89 21.1,2 20,2Z' : 'M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21C5,22.11 5.89,23 7,23H17C18.11,23 19,22.11 19,21V3C19,1.89 18.11,1 17,1Z');
         }
 
