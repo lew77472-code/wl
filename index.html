@@ -29,7 +29,8 @@
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
             background: rgba(8,8,8,0.7); backdrop-filter: blur(15px); transition: 0.4s; 
         }
-        .mode-mobile .navbar { width: 420px; left: 50%; transform: translateX(-50%); }
+        /* 修复隐藏隐患：PC预览模式下居中 */
+        .mode-mobile .navbar { width: inherit; max-width: 420px; left: 50%; transform: translateX(-50%); }
         body.light-mode .navbar { background: rgba(255,255,255,0.8); border-bottom: 1px solid #f0f0f0; }
 
         .nav-container { max-width: var(--content-max-width); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 12px var(--content-padding); }
@@ -38,74 +39,53 @@
 
         .nav-links { list-style: none; display: flex; gap: 35px; margin: 0; padding: 0; }
         .nav-links a { text-decoration: none; color: #666; display: flex; flex-direction: column; align-items: center; font-size: 0.8rem; letter-spacing: 2px; transition: 0.3s; }
-        
-        .nav-links a small { 
-            opacity: 0; 
-            transform: translateY(4px); 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 0.55rem; margin-top: 2px; color: #444; text-transform: uppercase;
-        }
+        .nav-links a small { opacity: 0; transform: translateY(4px); transition: all 0.4s; font-size: 0.55rem; margin-top: 2px; color: #444; }
         .nav-links a:hover span { color: #fff; }
         body.light-mode .nav-links a:hover span { color: #000; }
         .nav-links a:hover small { opacity: 1; transform: translateY(0); }
 
         /* --- 框架逻辑 --- */
-        #main-wrapper { transition: max-width 0.6s cubic-bezier(0.4, 0, 0.2, 1); margin: 0 auto; min-height: 100vh; width: 100%; }
+        #main-wrapper { transition: max-width 0.6s; margin: 0 auto; min-height: 100vh; width: 100%; }
         .mode-mobile { max-width: 420px !important; border-left: 1px solid rgba(128,128,128,0.2); border-right: 1px solid rgba(128,128,128,0.2); }
         
         #device-toggle {
             position: fixed; bottom: 40px; right: 40px; z-index: 3000;
             width: 46px; height: 46px; background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.5s; opacity: 0.3;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.3; transition: 0.5s;
         }
-        #device-toggle:hover, .toggle-active { opacity: 1 !important; transform: scale(1.05); }
-        #device-toggle svg { width: 20px; height: 20px; fill: #888; }
+        .toggle-active { opacity: 1 !important; }
 
         .view-section { padding-top: 140px; display: none; opacity: 0; transition: opacity 0.6s; }
         .active-view { display: block; opacity: 1; }
 
         .collections-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 70px 50px; max-width: var(--content-max-width); margin: 0 auto; padding: 0 var(--content-padding) 100px; }
-        .mode-mobile .collections-grid { grid-template-columns: 1fr; }
         
-        .collection-card { cursor: pointer; }
-        .img-wrap { aspect-ratio: 3/2; overflow: hidden; background: #111; margin-bottom: 15px; }
-        .img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: 1.5s; filter: brightness(0.8); }
-        .collection-card:hover img { transform: scale(1.05); filter: brightness(1); }
+        /* --- 移动端专项优化 --- */
+        @media (max-width: 768px) {
+            .view-section { padding-top: 100px; }
+            .nav-container { padding: 10px 20px; }
+            .nav-links { gap: 18px; }
+            .nav-links a span { font-size: 0.75rem; }
+            .collections-grid { grid-template-columns: 1fr; gap: 40px; padding: 0 30px 100px; }
+            header h1 { font-size: 1.8rem !important; letter-spacing: 8px !important; }
+            #device-toggle { display: none; }
+        }
 
         /* --- 关于页特有组件 --- */
-        .meta-grid-about { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px; 
-            border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 20px 0; margin: 20px 0; 
-        }
-        .about-section-h3 { 
-            font-size: 1.1rem; border-bottom: 1px solid #000; padding-bottom: 10px; margin-top: 50px; margin-bottom: 25px; color: #000;
-        }
-        .content-list-about { list-style: none; padding: 0; color: #666; font-size: 0.9rem; line-height: 2.2; }
-        .tag-about { background: #f4f4f4; color: #888; padding: 5px 15px; font-size: 0.7rem; border-radius: 4px; }
+        .meta-grid-about { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 20px 0; margin: 20px 0; }
+        .about-section-h3 { font-size: 1.1rem; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 60px; margin-bottom: 25px; color: #000; letter-spacing: 1px; }
+        .content-list-about { list-style: none; padding: 0; color: #666; font-size: 0.85rem; line-height: 2.4; }
+        .tag-about { background: #f4f4f4; color: #888; padding: 5px 12px; font-size: 0.65rem; border-radius: 4px; }
 
-        /* 详情页通用 */
         .detail-wrapper { max-width: var(--content-max-width); margin: 0 auto; padding: 0 var(--content-padding) 100px; }
-        .back-btn-box { border: 1px solid #e0e0e0; padding: 8px 15px; font-size: 0.65rem; color: #666; text-decoration: none; text-transform: uppercase; cursor: pointer; }
-        .project-meta-bar { display: flex; justify-content: flex-start; gap: 40px; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; padding: 20px 0; margin: 30px 0; }
-        .meta-item { font-size: 0.72rem; color: #666; }
-        .meta-label { font-weight: bold; color: #1a1a1a; margin-right: 8px; }
-
-        .detail-gallery { display: flex; flex-direction: column; gap: 60px; }
-        .detail-gallery img { width: 100%; height: auto; display: block; opacity: 0; transition: 1s; }
-        .detail-gallery img.loaded { opacity: 1; }
-
-        .footer-contact { padding: 120px 40px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
-        body.light-mode .footer-contact { border-top: 1px solid rgba(0,0,0,0.05); }
-        
-        @media (max-width: 768px) { #device-toggle { display: none; } }
+        .back-btn-box { border: 1px solid #e0e0e0; padding: 8px 15px; font-size: 0.65rem; color: #666; text-decoration: none; cursor: pointer; }
     </style>
 </head>
 <body id="page-body">
 
     <div id="device-toggle" onclick="toggleDisplayMode()" title="预览模式">
-        <svg id="toggle-icon" viewBox="0 0 24 24"><path id="icon-path" d="M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21C5,22.11 5.89,23 7,23H17C18.11,23 19,22.11 19,21V3C19,1.89 18.11,1 17,1Z"/></svg>
+        <svg viewBox="0 0 24 24"><path id="icon-path" d="M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21C5,22.11 5.89,23 7,23H17C18.11,23 19,22.11 19,21V3C19,1.89 18.11,1 17,1Z"/></svg>
     </div>
 
     <nav class="navbar">
@@ -131,59 +111,66 @@
 
         <main id="about-page" class="view-section">
             <div class="detail-wrapper">
-                <div style="padding: 20px 0;">
-                    <a class="back-btn-box" onclick="window.location.hash=''">← BACK TO HOME</a>
-                </div>
-                <h1 style="font-size: 2.8rem; margin: 20px 0 10px 0; color: #1a1a1a;">关于 VISION ARCHIVE <span style="font-weight: 200; font-size: 1.5rem; vertical-align: middle; margin-left: 10px;">↗</span></h1>
-                <p style="color: #888; font-family: monospace; font-size: 0.8rem; margin-bottom: 30px; letter-spacing: 1px;">WebXR · Three.js · Photogrammetry · Spatial Data</p>
+                <div style="padding: 20px 0;"><a class="back-btn-box" onclick="window.location.hash=''">← BACK TO HOME</a></div>
+                
+                <h1 style="font-size: 2.8rem; margin: 20px 0 10px 0;">关于 VISION ARCHIVE <span style="font-weight: 200; font-size: 1.5rem; vertical-align: middle; margin-left: 10px;">↗</span></h1>
+                <p style="color: #888; font-family: monospace; font-size: 0.8rem; margin-bottom: 30px;">WebXR · Three.js · Photogrammetry · Spatial Data</p>
 
                 <div class="meta-grid-about">
                     <div class="meta-item"><span class="meta-label">类别:</span> 视觉研究</div>
-                    <div class="meta-item"><span class="meta-label">地点:</span> Shanghai, China</div>
+                    <div class="meta-item"><span class="meta-label">地点:</span> Shanghai</div>
                     <div class="meta-item"><span class="meta-label">年份:</span> 2026</div>
                     <div class="meta-item"><span class="meta-label">状态:</span> Active</div>
-                    <div class="meta-item"><span class="meta-label">团队:</span> 1人</div>
-                    <div class="meta-item"><span class="meta-label">角色:</span> Designer</div>
                 </div>
 
-                <div style="display: flex; gap: 10px; margin: 30px 0;">
+                <div style="display: flex; gap: 10px; margin: 30px 0; flex-wrap: wrap;">
                     <span class="tag-about">archaeological visualization</span>
                     <span class="tag-about">memory</span>
                     <span class="tag-about">virtual reality</span>
                 </div>
 
-                <div style="margin-top: 60px;">
-                    <h3 class="about-section-h3" style="margin-top: 0;">太长不看</h3>
-                    <p style="font-style: italic; color: #444; line-height: 2; border-left: 2px solid #eee; padding-left: 20px;">
-                        一个值得信赖的、由创作者主导的视觉档案系统，使观察者能够透明地呈现和探索那些被日光稀释的瞬间证据。
-                    </p>
+                <h3 class="about-section-h3" style="margin-top: 40px;">太长不看</h3>
+                <p style="font-style: italic; color: #555; line-height: 2; border-left: 2px solid #eee; padding-left: 20px;">
+                    一个值得信赖的、专家控制的 WebXR 系统，使观察者能够透明地呈现和探索那些不确定的空间证据。
+                </p>
 
-                    <h3 class="about-section-h3">核心贡献</h3>
-                    <ul class="content-list-about">
-                        <li>— 构建了一个基于数字孪生的视觉交互系统，使影像能够独立管理。</li>
-                        <li>— 通过透明的数据结构和交互逻辑，将静态瞬间转换为可感知的数字空间。</li>
-                        <li>— 重新建立了观察者对数字影像的真实信任感。</li>
-                    </ul>
+                <h3 class="about-section-h3">核心贡献</h3>
+                <ul class="content-list-about">
+                    <li>— 我构建了一个基于网络的 VR/WebXR 交互系统，使创作者能够独立管理和呈现成果。</li>
+                    <li>— 该系统通过透明的数据结构和交互逻辑，将静态瞬间转换为可维护和可更新的空间呈现。</li>
+                    <li>— 通过将作者身份归还给资产所有者，该系统重建了对数字和叙事的信任。</li>
+                </ul>
 
-                    <h3 class="about-section-h3">技术栈</h3>
-                    <p style="font-family: monospace; font-size: 0.75rem; color: #999; letter-spacing: 1px; text-transform: uppercase;">
-                        WebXR · Three.js · GIS · Photogrammetry · CSV/JSON Data Pipeline
-                    </p>
-                </div>
+                <h3 class="about-section-h3">系统如何运作</h3>
+                <ul class="content-list-about">
+                    <li>— 设计了基于坐标的空间交互逻辑，以组织多源和不确定的视觉证据。</li>
+                    <li>— 构建了领域专家可维护的内容工作流，消除了对外部技术黑盒的依赖。</li>
+                    <li>— 通过固定与浮动空间标记，将叙事的不确定性直接编码在设计中。</li>
+                </ul>
+
+                <h3 class="about-section-h3">影响与意义</h3>
+                <ul class="content-list-about">
+                    <li>— 创作者将摄影成果上传到结构化数据存储库。</li>
+                    <li>— WebXR 界面根据预定义的空间和交互规则自动获取和渲染内容。</li>
+                    <li>— 内容更新直接传播到界面，无需额外开发成本。</li>
+                </ul>
+
+                <h3 class="about-section-h3">技术栈</h3>
+                <p style="font-family: monospace; font-size: 0.75rem; color: #999; letter-spacing: 1px;">
+                    WEBXR · THREE.JS · GIS · PHOTOGRAMMETRY · CSV/JSON DATA PIPELINE
+                </p>
             </div>
         </main>
 
         <main id="detail-page" class="view-section">
             <div class="detail-wrapper">
                 <div style="padding: 40px 0;"><a class="back-btn-box" onclick="window.location.hash=''">← BACK TO PROJECTS</a></div>
-                <h1 id="det-zh" style="font-size: 2.2rem; margin: 10px 0; color: #1a1a1a;">项目名称</h1>
+                <h1 id="det-zh" style="font-size: 2.2rem; margin: 10px 0;">项目名称</h1>
                 <div class="project-meta-bar">
                     <div class="meta-item"><span class="meta-label">类别:</span> <span id="det-category"></span></div>
-                    <div class="meta-item"><span class="meta-label">地点:</span> <span id="det-location"></span></div>
                     <div class="meta-item"><span class="meta-label">年份:</span> <span id="det-year"></span></div>
-                    <div class="meta-item"><span class="meta-label">角色:</span> <span id="det-role"></span></div>
                 </div>
-                <div id="det-intro" style="max-width: 800px; margin: 80px auto; text-align: center; font-style: italic; line-height: 2.2; color: #444;"></div>
+                <div id="det-intro" style="max-width: 800px; margin: 60px auto; text-align: center; font-style: italic; line-height: 2.2; color: #444;"></div>
                 <div class="detail-gallery" id="det-images"></div>
             </div>
         </main>
@@ -212,42 +199,37 @@
 
         function handleRoute() {
             const hash = window.location.hash;
-            const landing = document.getElementById('landing-page');
-            const detail = document.getElementById('detail-page');
-            const about = document.getElementById('about-page');
+            const views = {
+                landing: document.getElementById('landing-page'),
+                detail: document.getElementById('detail-page'),
+                about: document.getElementById('about-page')
+            };
 
-            [landing, detail, about].forEach(el => el.classList.remove('active-view'));
+            Object.values(views).forEach(el => el.classList.remove('active-view'));
 
             if (hash === '#about') {
-                about.classList.add('active-view');
+                views.about.classList.add('active-view');
                 document.body.classList.add('light-mode');
-                window.scrollTo(0, 0);
             } else if (hash.startsWith('#project-')) {
                 const index = parseInt(hash.replace('#project-', ''));
                 if (!isNaN(index) && collections[index]) {
                     showProject(index);
-                    detail.classList.add('active-view');
+                    views.detail.classList.add('active-view');
                     document.body.classList.add('light-mode');
                 }
             } else {
-                landing.classList.add('active-view');
+                views.landing.classList.add('active-view');
                 document.body.classList.remove('light-mode');
-                window.scrollTo(0, 0);
             }
+            window.scrollTo(0, 0);
         }
-
-        window.addEventListener('hashchange', handleRoute);
-        window.addEventListener('load', handleRoute);
 
         function showProject(index) {
             const data = collections[index];
             document.getElementById('det-zh').innerText = data.zh;
             document.getElementById('det-category').innerText = data.cat;
-            document.getElementById('det-location').innerText = data.loc;
             document.getElementById('det-year').innerText = data.yr;
-            document.getElementById('det-role').innerText = data.role;
             document.getElementById('det-intro').innerText = `“ ${data.intro} ”`;
-
             const gallery = document.getElementById('det-images');
             gallery.innerHTML = '';
             data.images.forEach(imgName => {
@@ -258,6 +240,7 @@
             });
         }
 
+        // 初始化首页网格
         const grid = document.getElementById('main-grid');
         collections.forEach((item, index) => {
             const card = document.createElement('div');
@@ -265,22 +248,24 @@
             card.onclick = () => window.location.hash = `project-${index}`;
             card.innerHTML = `
                 <div class="img-wrap"><img src="images/${item.images[0]}" loading="lazy"></div>
-                <div class="card-zh">${item.zh}</div>
-                <div class="card-en">${item.en}</div>
+                <div style="font-size:0.9rem; margin-bottom:4px;">${item.zh}</div>
+                <div style="font-size:0.7rem; color:#666;">${item.en}</div>
             `;
             grid.appendChild(card);
         });
+
+        window.addEventListener('hashchange', handleRoute);
+        window.addEventListener('load', handleRoute);
 
         let isMobileMode = false;
         function toggleDisplayMode() {
             const wrapper = document.getElementById('main-wrapper');
             isMobileMode = !isMobileMode;
             wrapper.classList.toggle('mode-mobile', isMobileMode);
-            document.getElementById('icon-path').setAttribute('d', isMobileMode ? 'M20,18H4V4H20M20,2H4A2,2 0 0,0 2,4V18A2,2 0 0,0 4,20H9L7,22H17L15,20H20A2,2 0 0,0 22,18V4C22,2.89 21.1,2 20,2Z' : 'M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21C5,22.11 5.89,23 7,23H17C18.11,23 19,22.11 19,21V3C19,1.89 18.11,1 17,1Z');
         }
 
         let timer;
-        window.onscroll = window.onmousemove = () => {
+        window.onscroll = () => {
             const btn = document.getElementById('device-toggle');
             btn.classList.add('toggle-active');
             clearTimeout(timer);
