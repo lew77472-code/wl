@@ -6,12 +6,10 @@
     <title>VISION ARCHIVE | Photography Portfolio</title>
     <style>
         :root {
-            --dark-bg: #080808;
+            --dark-bg: #ffffff; 
             --light-bg: #ffffff;
-            --transition-speed: 0.6s;
-            /* 增大最大宽度限制，让大屏更舒展 */
-            --desktop-max-width: 1600px; 
-            --desktop-padding: 5vw; /* 使用视口单位，屏幕越大边距越大 */
+            --desktop-max-width: 1400px; 
+            --desktop-padding: 6vw;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -19,115 +17,120 @@
         
         html, body { 
             margin: 0; padding: 0; width: 100%; 
-            overflow-x: hidden; 
-            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", sans-serif;
             background-color: var(--dark-bg);
-            color: #ffffff;
-            transition: background-color var(--transition-speed);
+            color: #000;
         }
-        body.light-mode { background-color: var(--light-bg); color: #000; }
 
-        /* --- 导航栏优化：全屏延伸 --- */
+        body.lock-scroll { overflow: hidden !important; height: 100vh; position: fixed; width: 100%; }
+
+        /* --- 导航栏 --- */
         .navbar { 
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
-            background: rgba(8,8,8,0.7); backdrop-filter: blur(15px); transition: 0.4s; 
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        body.light-mode .navbar { background: rgba(255,255,255,0.8); border-bottom: 1px solid #f0f0f0; }
-
         .nav-container { 
             display: flex; justify-content: space-between; align-items: center; 
-            margin: 0 auto; max-width: var(--desktop-max-width); padding: 25px var(--desktop-padding);
+            margin: 0 auto; max-width: var(--desktop-max-width); padding: 20px var(--desktop-padding);
         }
-        
-        .logo { display: flex; gap: 4px; cursor: pointer; mix-blend-mode: difference; }
-        .logo span { width: 6px; height: 6px; background: #fff; border-radius: 50%; }
+        .logo { font-weight: 900; letter-spacing: -0.5px; font-size: 1.1rem; cursor: pointer; text-transform: uppercase; }
+        .nav-links { list-style: none; display: flex; gap: 30px; margin: 0; padding: 0; }
+        .nav-links a { 
+            text-decoration: none; color: #000; font-size: 0.7rem; font-weight: 500; 
+            opacity: 0.4; transition: 0.3s; white-space: nowrap;
+        }
+        .nav-links a:hover, .nav-links a.active { opacity: 1; }
 
-        .nav-links { list-style: none; display: flex; gap: 45px; margin: 0; padding: 0; }
-        .nav-links a { text-decoration: none; color: #888; transition: 0.3s; font-size: 0.85rem; letter-spacing: 2px;}
-        .nav-links a:hover { color: #fff; }
-        body.light-mode .nav-links a:hover { color: #000; }
-
-        /* --- 布局容器 --- */
-        #main-wrapper { margin: 0 auto; width: 100%; }
-        .view-section { display: none; opacity: 0; width: 100%; padding-top: 140px; }
+        /* --- 视图动画 --- */
+        .view-section { display: none; opacity: 0; width: 100%; }
         .active-view { display: block; opacity: 1; animation: fadeIn 0.8s ease forwards; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        header { text-align: center; padding: 80px 20px 120px; }
-        header h1 { font-size: clamp(2rem, 5vw, 4rem); letter-spacing: 20px; text-transform: uppercase; margin: 0; }
-        header p { font-size: 0.9rem; color: #666; letter-spacing: 6px; margin-top: 30px; }
+        /* --- Hero Section --- */
+        .landing-hero { position: relative; width: 100%; height: 100vh; overflow: hidden; display: flex; align-items: center; }
+        .hero-cover-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .hero-cover-container img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-text-area { position: relative; z-index: 10; padding: 0 var(--desktop-padding); max-width: var(--desktop-max-width); margin: 0 auto; width: 100%; pointer-events: none;}
+        .hero-title { font-size: clamp(3.5rem, 12vw, 9.5rem); font-weight: 700; line-height: 0.82; letter-spacing: -0.04em; text-transform: uppercase; margin: 0; color: #fff; mix-blend-mode: difference; }
 
-        /* --- 核心修改：动态网格 --- */
-        .collections-grid { 
-            display: grid; 
-            /* 电脑端默认3列，超大屏4列 */
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 60px 40px; 
-            max-width: var(--desktop-max-width); 
-            margin: 0 auto; 
-            padding: 0 var(--desktop-padding) 120px; 
-        }
-
-        .collection-card { cursor: pointer; width: 100%; }
-        .img-wrap { aspect-ratio: 3/4; overflow: hidden; background: #111; margin-bottom: 20px; }
-        .img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: 1.2s cubic-bezier(0.2, 0, 0.2, 1); filter: brightness(0.85); }
-        .collection-card:hover img { transform: scale(1.05); filter: brightness(1); }
-        .card-zh { font-size: 1.1rem; margin-bottom: 6px; }
-        .card-en { font-size: 0.75rem; color: #666; letter-spacing: 1px; text-transform: uppercase; }
-
-        /* --- 详情页优化 --- */
-        .detail-wrapper { max-width: 1100px; margin: 0 auto; padding: 0 var(--desktop-padding) 120px; }
-        .meta-bar { 
-            display: grid; grid-template-columns: repeat(4, 1fr); 
-            gap: 20px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; 
-            padding: 25px 0; margin: 40px 0; 
-        }
-        .meta-item { display: flex; flex-direction: column; gap: 8px; }
-        .meta-label { font-size: 0.7rem; color: #999; text-transform: uppercase; letter-spacing: 1px; }
-        .meta-value { font-size: 0.9rem; color: #333; font-weight: 500; }
-
-        .detail-gallery { display: flex; flex-direction: column; gap: 60px; margin-top: 60px; }
-        .detail-gallery img { width: 100%; height: auto; border-radius: 2px; }
-
-        /* --- 页脚优化 --- */
-        .footer-contact { 
-            padding: 100px var(--desktop-padding); 
-            border-top: 1px solid rgba(128,128,128,0.1);
-            max-width: var(--desktop-max-width);
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .footer-left { display: flex; gap: 40px; }
-        .footer-left a { text-decoration: none; color: #666; font-size: 0.75rem; transition: 0.3s; }
-        .footer-left a:hover { color: #fff; }
-        body.light-mode .footer-left a:hover { color: #000; }
-        .page-views { font-family: monospace; font-size: 0.75rem; color: #444; letter-spacing: 1px; }
-
-        /* --- 响应式断点控制 --- */
-        
-        /* 1. 中等屏幕 (平板/小笔记本当) 显示 2 列 */
-        @media (max-width: 1100px) {
-            .collections-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        /* 2. 移动端 (手机) 显示 1 列 */
-        @media (max-width: 768px) {
-            .nav-container { padding: 15px 20px; }
-            .nav-links { gap: 20px; }
-            header { padding: 40px 20px 60px; }
-            header h1 { letter-spacing: 8px; }
-            .collections-grid { grid-template-columns: 1fr; padding: 0 20px 80px; gap: 40px; }
-            .meta-bar { grid-template-columns: 1fr 1fr; gap: 30px; }
-            .footer-contact { flex-direction: column; gap: 30px; text-align: center; }
-            .footer-left { flex-direction: column; gap: 15px; }
+        /* --- 首页：堆叠卡片优化 --- */
+        .collections-grid { background: #fff; }
+        .collection-card { 
+            height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; 
+            position: sticky; top: 0; background-color: #ffffff; border-top: 1px solid #f2f2f2; padding: 0 var(--desktop-padding);
         }
         
-        /* 3. 针对超大屏增加列数 (可选) */
-        @media (min-width: 1800px) {
-            .collections-grid { grid-template-columns: repeat(4, 1fr); }
+        .card-inner-wrapper {
+            display: grid;
+            grid-template-columns: 0.4fr 1.6fr; 
+            gap: 8vw;
+            width: 100%;
+            max-width: 1100px; 
+            align-items: flex-start;
+        }
+
+        .card-index { 
+            font-size: clamp(6rem, 12vw, 14rem); font-weight: 800; color: #000; 
+            letter-spacing: -0.06em; line-height: 0.8; margin-top: 15px; user-select: none;
+        }
+
+        .card-content-right { display: flex; flex-direction: column; width: 100%; }
+        .card-category { font-size: 0.65rem; color: #aaa; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+        .card-zh { font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 700; margin: 0 0 10px 0; letter-spacing: -0.02em; }
+        .card-subtext { font-size: 0.8rem; color: #777; line-height: 1.8; margin-bottom: 30px; max-width: 450px; }
+        
+        .img-wrap { 
+            width: 65%; 
+            max-width: 480px; 
+            aspect-ratio: 16/10; 
+            overflow: hidden; 
+            border-radius: 2px; 
+            background: #fcfcfc; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            margin-left: 0; margin-right: auto; 
+        }
+        /* 这里的 transition opacity 改为 0.2s 以适配 0.5s 的快速切换 */
+        .img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease; }
+        .collection-card:hover .img-wrap img { transform: scale(1.04); }
+
+        .card-extra-info { border-top: 1px solid #eee; margin-top: 35px; width: 65%; max-width: 480px; }
+        .info-row { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 14px 0; border-bottom: 1px solid #eee; 
+            font-size: 0.7rem; font-weight: 600; color: #000; text-transform: uppercase;
+        }
+
+        /* --- 其余页面样式 --- */
+        #collections-page.active-view { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        .collections-view-container { display: flex; flex-direction: column; height: 100%; padding-top: 100px; }
+        .back-nav { flex-shrink: 0; padding: 20px var(--desktop-padding); }
+        .grid-layout { display: flex; flex-wrap: nowrap; gap: 40px; padding: 0 var(--desktop-padding); overflow-x: auto; flex: 1; align-items: center; scrollbar-width: none; }
+        .grid-item { flex: 0 0 32vw; min-width: 300px; cursor: pointer; }
+        .grid-thumb { width: 100%; aspect-ratio: 1.5/1; overflow: hidden; background: #f7f7f7; margin-bottom: 15px; }
+        .grid-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+        #detail-page { padding-top: 140px; }
+        .detail-wrapper { max-width: 1100px; margin: 0 auto; padding: 0 var(--desktop-padding) 100px; }
+        .meta-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 25px 0; margin: 40px 0; }
+        .meta-label { font-size: 0.65rem; color: #bbb; text-transform: uppercase; margin-bottom: 8px; display: block; letter-spacing: 0.05em; }
+        .meta-value { font-size: 0.85rem; font-weight: 500; }
+        .detail-description { font-size: 1rem; line-height: 1.8; color: #555; margin-bottom: 60px; max-width: 700px; }
+        .gallery-item { margin-bottom: 60px; }
+        .gallery-item img { width: 100%; height: auto; border-radius: 2px; }
+        .gallery-caption { font-size: 0.75rem; color: #999; margin-top: 15px; letter-spacing: 0.02em; }
+
+        .fixed-footer { flex-shrink: 0; padding: 30px var(--desktop-padding); border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: #999; background: #fff; }
+        .footer-left a { color: #999; text-decoration: none; margin-right: 25px; }
+
+        @media (max-width: 900px) {
+            .card-inner-wrapper { grid-template-columns: 1fr; gap: 20px; }
+            .card-index { font-size: 5rem; margin-top: 0; }
+            .img-wrap, .card-extra-info { width: 100%; max-width: 100%; }
+            .collection-card { height: auto; padding: 100px var(--desktop-padding); position: static; }
+            .meta-bar { grid-template-columns: 1fr 1fr; }
+            .grid-item { flex: 0 0 80vw; }
         }
     </style>
 </head>
@@ -135,137 +138,220 @@
 
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo" onclick="window.location.hash=''"><span></span><span></span><span></span></div>
+            <div class="logo" onclick="window.location.hash='';">VISION ARCHIVE</div>
             <ul class="nav-links">
-                <li><a href="#">首页</a></li>
-                <li><a href="#main-grid">合集</a></li>
-                <li><a href="#about">关于</a></li>
-                <li><a href="#contact-anchor">联系</a></li>
+                <li><a href="#" data-nav="home">HOME / 首页</a></li>
+                <li><a href="#collections" data-nav="collections">COLLECTIONS / 合集</a></li>
+                <li><a href="#about" data-nav="about">ABOUT / 关于</a></li>
+                <li><a href="#contact" data-nav="contact">CONTACT / 联系</a></li>
             </ul>
         </div>
     </nav>
 
     <div id="main-wrapper">
         <main id="landing-page" class="view-section active-view">
-            <header>
-                <h1>Vision Archive</h1>
-                <p>以此存档 那些被日光稀释的瞬间</p>
-            </header>
+            <section class="landing-hero">
+                <div class="hero-cover-container"><img src="images/0.jpg"></div>
+                <div class="hero-text-area"><h1 class="hero-title">Vision<br>Archive</h1></div>
+            </section>
             <div class="collections-grid" id="main-grid"></div>
+            <footer class="fixed-footer" id="contact-section" style="border:none; padding:120px var(--desktop-padding);">
+                <div class="footer-left">
+                    <a href="#">@2026 VISION ARCHIVE</a>
+                    <a href="mailto:contact@visionarchive.me">Email / 邮件</a>
+                </div>
+                <div class="page-views">SCROLL TO TOP / 返回顶部</div>
+            </footer>
+        </main>
+
+        <main id="collections-page" class="view-section">
+            <div class="collections-view-container">
+                <div class="back-nav"><a onclick="window.location.hash=''" style="cursor:pointer; color:#888; font-size:0.75rem;">← BACK TO HOME</a></div>
+                <div class="grid-layout" id="collections-grid-target"></div>
+                <footer class="fixed-footer">
+                    <div class="footer-left"><a>@VISION ARCHIVE</a><a>EMAIL</a></div>
+                    <div class="page-views" id="visitor-display">SCROLL TO EXPLORE / 左右滑动</div>
+                </footer>
+            </div>
         </main>
 
         <main id="about-page" class="view-section">
             <div class="detail-wrapper">
-                <div style="padding: 20px 0;"><a onclick="window.location.hash=''" style="cursor:pointer; font-size:0.75rem; color:#888;">← BACK TO HOME</a></div>
-                <h1 style="font-size: 2.5rem; margin: 20px 0;">关于 VISION ARCHIVE</h1>
-                <p style="color: #666; line-height: 2; font-size: 1.1rem;">这里是你的个人摄影存档空间。专注于通过镜头捕捉光影与空间的细微关系，重新建立观察者对数字影像的真实感知。</p>
+                <a onclick="window.location.hash=''" style="cursor:pointer; color:#888; font-size: 0.8rem;">← BACK / 返回</a>
+                <h1 style="font-size: 3rem; margin: 40px 0 20px;">About / 关于</h1>
+                <p style="line-height: 2; color: #555; font-size: 1.1rem;">专注于捕捉光影与空间的细微关系。</p>
             </div>
         </main>
 
         <main id="detail-page" class="view-section">
             <div class="detail-wrapper">
-                <div style="padding: 20px 0;"><a onclick="window.location.hash=''" style="cursor:pointer; font-size:0.75rem; color:#888;">← BACK TO PROJECTS</a></div>
-                <h1 id="det-zh" style="font-size: clamp(1.8rem, 4vw, 2.8rem); margin: 10px 0;">项目名称</h1>
-                
-                <div class="meta-bar">
-                    <div class="meta-item"><span class="meta-label">类别 / CATEGORY</span><span id="det-cat" class="meta-value">-</span></div>
-                    <div class="meta-item"><span class="meta-label">地点 / LOCATION</span><span id="det-loc" class="meta-value">-</span></div>
-                    <div class="meta-item"><span class="meta-label">年份 / YEAR</span><span id="det-year" class="meta-value">-</span></div>
-                    <div class="meta-item"><span class="meta-label">角色 / ROLE</span><span id="det-role" class="meta-value">-</span></div>
-                </div>
-
-                <div id="det-intro" style="margin: 40px auto; line-height: 2; color: #444; font-size: 1.05rem;"></div>
-                <div class="detail-gallery" id="det-images"></div>
+                <a onclick="window.location.hash='#collections'" style="cursor:pointer; color:#888; font-size: 0.8rem;">← BACK / 返回</a>
+                <h1 id="det-zh" style="font-size: 2.5rem; margin: 30px 0 0 0;"></h1>
+                <div class="meta-bar"></div>
+                <div id="det-desc" class="detail-description"></div>
+                <div id="det-images"></div>
             </div>
         </main>
-
-        <footer class="footer-contact" id="contact-anchor">
-            <div class="footer-left">
-                <a href="#">@Vision Archive</a>
-                <a href="mailto:contact@visionarchive.me">Email</a>
-                <a href="https://xhslink.com/m/52WU1ywxBjw" target="_blank">Xiaohongshu ↗</a>
-            </div>
-            <div class="page-views" id="view-counter">VIEWS: 000,007</div>
-        </footer>
     </div>
 
     <script>
         const collections = [
-            { zh: "别打恐龙", en: "Silence of Wild", cat: "Nature", loc: "Turkey", yr: "2023", role: "Photographer", intro: "探索自然界中被遗忘的寂静角落。", images: ["1.jpg", "2.jpg"] },
-            { zh: "瞬时街头", en: "Pulse of Street", cat: "Street", loc: "Tokyo", yr: "2024", role: "Digital Archive", intro: "捕捉城市脉动中的瞬时美学。", images: ["4.jpg", "5.jpg"] },
-            { zh: "几何重塑", en: "Geometry Forms", cat: "Architecture", loc: "Berlin", yr: "2024", role: "Lead Artist", intro: "建筑与光影的几何解构。", images: ["9.jpg", "10.jpg"] },
-            { zh: "呼吸之间", en: "Breath of Life", cat: "Conceptual", loc: "Iceland", yr: "2022", role: "Visual Research", intro: "记录生命最原始的律动。", images: ["6.jpg", "7.jpg"] }
+            { 
+                zh: "荒野之境", en: "Silence", cat: "Nature", loc: "Turkey", yr: "2023", role: "Photographer", views: "42,100",
+                desc: "在土耳其的荒原中，建筑与自然形成了一种无声的张力。",
+                // 修改此处：增加多张图片url用于首页循环
+                images: [
+                    { url: "1.jpg", name: "The Silence" },
+                    { url: "2.jpg", name: "The Void" },
+                    { url: "3.jpg", name: "The Horizon" }
+                ] 
+            },
+            { 
+                zh: "光影之隙", en: "Urban", cat: "Cityscape", loc: "Shanghai", yr: "2024", role: "Photographer", views: "38,500",
+                desc: "建筑与时间的无声对话。上海的街道在晨昏交替之际。",
+                images: [
+                    { url: "3.jpg", name: "Motion Ecosystem" },
+                    { url: "4.jpg", name: "Flow" },
+                    { url: "5.jpg", name: "Structure" }
+                ] 
+            },
+            { 
+                zh: "极简构筑", en: "Geometry", cat: "Minimalism", loc: "Berlin", yr: "2024", role: "Photographer", views: "29,400",
+                desc: "回归纯粹的几何。这组作品剥离了所有的繁杂。",
+                images: [
+                    { url: "5.jpg", name: "Next 2022" },
+                    { url: "6.jpg", name: "Cube" },
+                    { url: "1.jpg", name: "Balance" }
+                ] 
+            }
         ];
 
-        function updateViews() {
-            let views = parseInt(localStorage.getItem('page_views') || "12840");
-            views += Math.floor(Math.random() * 5) + 1;
-            localStorage.setItem('page_views', views);
-            document.getElementById('view-counter').innerText = `VIEWS: ${views.toLocaleString()}`;
+        const mainGrid = document.getElementById('main-grid');
+        collections.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'collection-card';
+            card.onclick = () => window.location.hash = `project-${index}`;
+            card.innerHTML = `
+                <div class="card-inner-wrapper">
+                    <div class="card-index">${index + 1}</div>
+                    <div class="card-content-right">
+                        <div class="card-category">(${item.en.toUpperCase()} / ${item.cat})</div>
+                        <div class="card-zh">${item.zh}</div>
+                        <div class="card-subtext">A curated collection of ${item.en.toLowerCase()} through the lens of space and time.</div>
+                        <div class="img-wrap">
+                            <img src="images/${item.images[0].url}" class="loop-img" data-proj="${index}" data-current="0">
+                        </div>
+                        <div class="card-extra-info">
+                            <div class="info-row"><span>GUIDELINES / 指南</span><span>+</span></div>
+                        </div>
+                    </div>
+                </div>`;
+            mainGrid.appendChild(card);
+        });
+
+        // 新增：首页图片自动循环播放函数 (0.5s)
+        function initImageLoop() {
+            setInterval(() => {
+                const images = document.querySelectorAll('.loop-img');
+                images.forEach(img => {
+                    const projIdx = img.getAttribute('data-proj');
+                    const currentImgIdx = parseInt(img.getAttribute('data-current'));
+                    const projectData = collections[projIdx];
+                    
+                    if (projectData.images.length > 1) {
+                        const nextIdx = (currentImgIdx + 1) % projectData.images.length;
+                        
+                        // 执行切换
+                        img.style.opacity = '0.9'; // 快速切换时的视觉缓冲
+                        setTimeout(() => {
+                            img.src = `images/${projectData.images[nextIdx].url}`;
+                            img.setAttribute('data-current', nextIdx);
+                            img.style.opacity = '1';
+                        }, 50); 
+                    }
+                });
+            }, 1000); // 0.5秒切换频率
         }
 
         function handleRoute() {
             const hash = window.location.hash;
-            const landing = document.getElementById('landing-page');
-            const about = document.getElementById('about-page');
-            const detail = document.getElementById('detail-page');
+            const sections = document.querySelectorAll('.view-section');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            document.getElementById('page-body').classList.remove('lock-scroll');
+            sections.forEach(s => s.classList.remove('active-view'));
+            navLinks.forEach(l => l.classList.remove('active'));
 
-            [landing, about, detail].forEach(el => el.classList.remove('active-view'));
-
-            if (hash === '#about') {
-                about.classList.add('active-view');
-                document.body.classList.add('light-mode');
-            } else if (hash.startsWith('#project-')) {
-                const idx = parseInt(hash.replace('#project-', ''));
-                renderDetail(idx);
-                detail.classList.add('active-view');
-                document.body.classList.add('light-mode');
-            } else {
-                landing.classList.add('active-view');
-                document.body.classList.remove('light-mode');
+            if (hash === '#collections') {
+                renderCollectionsGrid();
+                document.getElementById('collections-page').classList.add('active-view');
+                document.querySelector('[data-nav="collections"]').classList.add('active');
+                document.getElementById('page-body').classList.add('lock-scroll');
+            } 
+            else if (hash.startsWith('#project-')) {
+                renderDetail(hash.split('-')[1]);
+                document.getElementById('detail-page').classList.add('active-view');
+                window.scrollTo(0,0);
+            } 
+            else if (hash === '#about') {
+                document.getElementById('about-page').classList.add('active-view');
+                document.querySelector('[data-nav="about"]').classList.add('active');
+            } 
+            else if (hash === '#contact') {
+                document.getElementById('landing-page').classList.add('active-view');
+                document.querySelector('[data-nav="contact"]').classList.add('active');
+                document.getElementById('contact-section').scrollIntoView({ behavior: 'smooth' });
             }
-            window.scrollTo(0, 0);
+            else {
+                document.getElementById('landing-page').classList.add('active-view');
+                document.querySelector('[data-nav="home"]').classList.add('active');
+            }
+        }
+
+        function renderCollectionsGrid() {
+            const target = document.getElementById('collections-grid-target');
+            target.innerHTML = collections.map((item, index) => `
+                <div class="grid-item" onclick="window.location.hash='project-${index}'">
+                    <div class="grid-thumb"><img src="images/${item.images[0].url}"></div>
+                    <div style="font-size:0.75rem; font-weight:500;">${item.zh} / ${item.en.toUpperCase()}</div>
+                </div>
+            `).join('');
+
+            const totalViews = collections.reduce((acc, curr) => acc + parseInt(curr.views.replace(/,/g, '')), 0);
+            const visitorDisplay = document.getElementById('visitor-display');
+            if(visitorDisplay) {
+                visitorDisplay.innerHTML = `SCROLL TO EXPLORE / 左右滑动 &nbsp;&nbsp; TOTAL VIEWS: ${totalViews.toLocaleString()}`;
+            }
         }
 
         function renderDetail(idx) {
             const data = collections[idx];
             if(!data) return;
             document.getElementById('det-zh').innerText = data.zh;
-            document.getElementById('det-cat').innerText = data.cat;
-            document.getElementById('det-loc').innerText = data.loc;
-            document.getElementById('det-year').innerText = data.yr;
-            document.getElementById('det-role').innerText = data.role;
-            document.getElementById('det-intro').innerText = data.intro;
-            
-            const gallery = document.getElementById('det-images');
-            gallery.innerHTML = '';
-            data.images.forEach(imgName => {
-                const img = document.createElement('img');
-                img.src = `images/${imgName}`;
-                gallery.appendChild(img);
-            });
+            const metaBar = document.querySelector('#detail-page .meta-bar');
+            metaBar.innerHTML = `
+                <div class="meta-item"><span class="meta-label">Category / 类别</span><span class="meta-value">${data.cat}</span></div>
+                <div class="meta-item"><span class="meta-label">Location / 地点</span><span class="meta-value">${data.loc}</span></div>
+                <div class="meta-item"><span class="meta-label">Year / 年份</span><span class="meta-value">${data.yr}</span></div>
+                <div class="meta-item"><span class="meta-label">Role / 角色</span><span class="meta-value">${data.role}</span></div>
+            `;
+            document.getElementById('det-desc').innerText = data.desc || "";
+            document.getElementById('det-images').innerHTML = data.images.map(img => `
+                <div class="gallery-item"><img src="images/${img.url}"><div class="gallery-caption">${img.name || ""}</div></div>
+            `).join('');
         }
 
-        const grid = document.getElementById('main-grid');
-        collections.forEach((item, index) => {
-            const card = document.createElement('div');
-            card.className = 'collection-card';
-            card.onclick = () => window.location.hash = `project-${index}`;
-            card.innerHTML = `
-                <div class="img-wrap"><img src="images/${item.images[0]}" loading="lazy"></div>
-                <div class="card-zh">${item.zh}</div>
-                <div class="card-en">${item.en}</div>
-            `;
-            grid.appendChild(card);
-        });
+        window.addEventListener('wheel', (e) => {
+            if (document.body.classList.contains('lock-scroll')) {
+                const grid = document.getElementById('collections-grid-target');
+                if (e.deltaY !== 0) { e.preventDefault(); grid.scrollLeft += e.deltaY; }
+            }
+        }, { passive: false });
 
         window.addEventListener('hashchange', handleRoute);
         window.addEventListener('load', () => {
             handleRoute();
-            updateViews();
+            initImageLoop(); // 初始化自动循环播放
         });
     </script>
 </body>
 </html>
-
-
