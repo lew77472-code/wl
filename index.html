@@ -3,355 +3,2144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VISION ARCHIVE | Photography Portfolio</title>
+    <title>VISION ARCHIVE · 交互作品集</title>
+    <!-- Tailwind CSS (用于新图片页) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 添加 03 所需的 Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+        /* ========== 全局变量 ========== */
         :root {
-            --dark-bg: #ffffff; 
-            --light-bg: #ffffff;
-            --desktop-max-width: 1400px; 
+            --primary: #00aaff;
+            --success: #00ff88;
+            --bg-white: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666;
+            --text-light: #999;
+            --overlay-bg: rgba(0,0,0,0.15);
+            
+            --card-width: 240px;
+            --card-height: 360px;
+            --card-overlap: -150px;
+            --card-float: -30px;
+            
+            --transition-slow: 0.8s;
+            --transition-medium: 0.5s;
+            --transition-fast: 0.3s;
+            
+            --z-stax: 2500;
+            --z-panel: 3500;
+            
+            --desktop-max-width: 1400px;
             --desktop-padding: 6vw;
+
+            --spring-easing: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
-        
-        html, body { 
-            margin: 0; padding: 0; width: 100%; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100vh;
+            overflow-y: hidden;
             font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", sans-serif;
-            background-color: var(--dark-bg);
+            background-color: var(--bg-white);
             color: #000;
         }
 
-        body.lock-scroll { overflow: hidden !important; height: 100vh; position: fixed; width: 100%; }
-
-        /* --- 导航栏 --- */
-        .navbar { 
-            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-        .nav-container { 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin: 0 auto; max-width: var(--desktop-max-width); padding: 20px var(--desktop-padding);
-        }
-        .logo { font-weight: 900; letter-spacing: -0.5px; font-size: 1.1rem; cursor: pointer; text-transform: uppercase; }
-        .nav-links { list-style: none; display: flex; gap: 30px; margin: 0; padding: 0; }
-        .nav-links a { 
-            text-decoration: none; color: #000; font-size: 0.7rem; font-weight: 500; 
-            opacity: 0.4; transition: 0.3s; white-space: nowrap;
-        }
-        .nav-links a:hover, .nav-links a.active { opacity: 1; }
-
-        /* --- 视图动画 --- */
-        .view-section { display: none; opacity: 0; width: 100%; }
-        .active-view { display: block; opacity: 1; animation: fadeIn 0.8s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- Hero Section --- */
-        .landing-hero { position: relative; width: 100%; height: 100vh; overflow: hidden; display: flex; align-items: center; }
-        .hero-cover-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        .hero-cover-container img { width: 100%; height: 100%; object-fit: cover; }
-        .hero-text-area { position: relative; z-index: 10; padding: 0 var(--desktop-padding); max-width: var(--desktop-max-width); margin: 0 auto; width: 100%; pointer-events: none;}
-        .hero-title { font-size: clamp(3.5rem, 12vw, 9.5rem); font-weight: 700; line-height: 0.82; letter-spacing: -0.04em; text-transform: uppercase; margin: 0; color: #fff; mix-blend-mode: difference; }
-
-        /* --- 首页：堆叠卡片优化 --- */
-        .collections-grid { background: #fff; }
-        .collection-card { 
-            height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; 
-            position: sticky; top: 0; background-color: #ffffff; border-top: 1px solid #f2f2f2; padding: 0 var(--desktop-padding);
-        }
-        
-        .card-inner-wrapper {
-            display: grid;
-            grid-template-columns: 0.4fr 1.6fr; 
-            gap: 8vw;
+        /* ========== 导航栏 (02样式) ========== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 1100px; 
+            z-index: 1000;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            padding: 20px var(--desktop-padding);
+        }
+        .navbar.visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: var(--desktop-max-width);
+            margin: 0 auto;
+        }
+        .logo {
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-left: -50px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            margin-right: -50px;
+        }
+        .nav-links li {
+            cursor: pointer;
+            display: flex;
+            align-items: baseline;
+            transition: opacity 0.2s;
+            font-size: 0.8rem;
+            font-weight: 500;
+            opacity: 0.4;
+            white-space: nowrap;
+            padding: 10px 0; /* 扩大点击区域 */
+        }
+        .nav-links li:hover { opacity: 1; }
+        .nav-links li.active { opacity: 1; }
+        .nav-links li .cn {
+            font-size: 12px;
+            margin-left: 4px;
+            font-weight: 400;
+            color: #666;
+        }
+
+        /* ========== 固定定位页面 ========== */
+        .fixed-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            transition: transform var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+            background: var(--bg-white);
+            overflow: hidden;
+        }
+
+        /* 欢迎页 */
+        #welcome-page {
+            z-index: 10;
+            transform: translateY(0);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            background: var(--bg-white);
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        #welcome-page::-webkit-scrollbar {
+            display: none;
+        }
+        .stax-header {
+            margin: 0 0 90px;
+            max-width: 900px;
+            padding: 0 var(--desktop-padding);
+            flex-shrink: 0;
+        }
+        .stax-header h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            color: #f0f0f0;
+            font-weight: 700;
+            margin-bottom: 25px;
+            letter-spacing: -1.5px;
+        }
+        .stax-status {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #333;
+        }
+        .stax-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            margin-right: 8px;
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse 3s infinite;
+        }
+        @keyframes pulse {
+            0%,100% { opacity:1; transform:scale(1); }
+            50% { opacity:0.4; transform:scale(1.2); }
+        }
+        .stax-contact-link {
+            color: var(--primary);
+            font-weight: bold;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color var(--transition-fast);
+            cursor: pointer;
+        }
+        .stax-contact-link:hover {
+            border-bottom-color: var(--primary);
+            opacity: 0.8;
+        }
+
+        /* 卡片容器 */
+        .stax-cards {
+            display: flex;
+            align-items: flex-end;
+            padding: 20px var(--desktop-padding);
+            width: max-content;
+            flex-shrink: 0;
+            margin-top: 0;
+        }
+
+        .stax-card {
+            width: var(--card-width);
+            height: var(--card-height);
+            border-radius: 20px;
+            margin-left: var(--card-overlap);
+            padding: 25px;
+            background: #333;
+            color: white;
+            font-weight: 800;
+            font-size: 16px;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            flex-shrink: 0;
+            opacity: 0;
+            transform: translateY(100px);
+            pointer-events: none;
+            transition: transform var(--transition-slow) cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow var(--transition-medium),
+                        opacity var(--transition-medium);
+            box-shadow: -8px 0 25px rgba(0,0,0,0.08);
+            will-change: transform, opacity;
+        }
+        .stax-card:first-child {
+            margin-left: 0;
+        }
+        .stax-card.reveal {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .stax-card.is-future { cursor: not-allowed; }
+        .stax-card:hover {
+            transform: translateY(var(--card-float)) scale(1.02);
+            z-index: 100;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            opacity: 1 !important;
+        }
+        .stax-cards:hover .stax-card:not(:hover) { opacity: 0.2; }
+
+        .stax-card .card-zh {
+            display: block;
+            font-size: 12px;
+            font-weight: 400;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+        .stax-card .watermark {
+            position: absolute;
+            bottom: 30px;
+            right: 20px;
+            font-size: 100px;
+            line-height: 0.8;
+            font-weight: 900;
+            opacity: 0.3;
+            letter-spacing: -4px;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* 卡片颜色主题 */
+        .stax-card.stax { background: #00b4d8; }
+        .stax-card.stax-dark { background: #1a1a1a; }
+        .stax-card.truffle { background: #2d2d2d; }
+        .stax-card.cnn { background: #cc0000; }
+        .stax-card.prototype { background: #f0f0f0; color: #333; border: 1px solid #ddd; }
+        .stax-card.substack { background: #ff6719; }
+        .stax-card.dribbble { background: #ea4c89; }
+        .stax-card.linkedin { background: #0077b5; }
+        .stax-card.email { background: #ffcc00; color: #333; }
+        .stax-card.resume { background: #eee; color: #d1d1d1; opacity: 0.7; display: flex; justify-content: center; align-items: center; font-size: 50px; }
+
+        /* 抖动动画 */
+        @keyframes shake {
+            0%,100% { transform: translateY(var(--card-float)) translateX(0); }
+            20% { transform: translateY(var(--card-float)) translateX(-12px); }
+            40% { transform: translateY(var(--card-float)) translateX(10px); }
+            60% { transform: translateY(var(--card-float)) translateX(-8px); }
+            80% { transform: translateY(var(--card-float)) translateX(5px); }
+        }
+        .stax-card.shake {
+            animation: shake 0.45s ease-in-out;
+            z-index: 5000 !important;
+        }
+
+        /* 图片页（LAB Studio） */
+        #image-page {
+            z-index: 20;
+            transform: translateY(100%);
+            font-family: 'Inter', sans-serif;
+            color: #1A1A1A;
+            overflow: hidden;
+            background: white;
+        }
+        #image-page .h-screen {
+            height: 100vh;
+        }
+
+        /* 动画定义 */
+        @keyframes kuyaSpring {
+            0% { transform: scaleY(0); opacity: 0; }
+            100% { transform: scaleY(1.15); opacity: 1; }
+        }
+        @keyframes elementPop {
+            0% { transform: translateX(-20px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes lineQuick {
+            0% { width: 0; opacity: 0; }
+            100% { width: 100%; opacity: 1; }
+        }
+
+        #image-page .hero-title {
+            font-size: clamp(5rem, 28vw, 35vh); 
+            line-height: 0.8;
+            letter-spacing: -0.06em;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin: 0;
+            margin-left: -0.035em; 
+            transform: scaleY(1.15);
+            transform-origin: bottom left; 
+            display: inline-block;
+            animation: kuyaSpring 0.8s var(--spring-easing) forwards;
+        }
+
+        #image-page .folder-list-container {
+            width: 50vw;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #image-page .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 22px;
+            font-weight: 600; 
+            white-space: nowrap;
+            animation: elementPop 0.4s var(--spring-easing) both;
+        }
+
+        #image-page .list-item:nth-child(1) { animation-delay: 0.4s; }
+        #image-page .list-item:nth-child(2) { animation-delay: 0.45s; }
+
+        #image-page .footer-line {
+            border-top: 1px solid #1A1A1A;
+            animation: lineQuick 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+        }
+
+        /* 独立控制 LAB 标题垂直位置的容器 */
+        #image-page .lab-title-container {
+            margin-top: 70px;
+        }
+
+        /* ===== 作品展示页 (02 样式) ===== */
+        #works-page {
+            z-index: 30;
+            transform: translateY(100%);
+            overflow-y: hidden;  /* 由内部滚动 */
+            background: #fff;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+        /* 已删除内部 header */
+        .clock {
+            position: absolute;
+            top: 80px;
+            right: 40px;
+            z-index: 101;
+            text-align: right;
+            font-size: 20px;
+            line-height: 1.2;
+            pointer-events: none;
+        }
+        /* 第二页时钟隐藏 */
+        .clock.image-page-clock {
+            display: none;
+        }
+        .clock .timezone {
+            display: block;
+            font-size: 14px;
+            font-weight: 400;
+            color: #ccc;
+            margin-top: 5px;
+        }
+        #works-page main {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 50px;
+            margin-top: 60px;
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+        .project-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;   
+            margin-left: 0px; 
+        }
+        .project-item {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 900;
+            cursor: pointer;
+            color: #eeeeee;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        .more-dots {
+            font-size: 24px;
+            font-weight: 550;
+            color: #ccc;
+            padding-left: 55px;
+            margin-top: -10px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .more-dots:hover {
+            opacity: 0.7;
+        }
+        .project-item.active { color: #000; }
+        .project-item:hover { color: #000; }
+        .project-item:active { transform: translateX(5px); }
+        .project-item span { font-size: 16px; margin-right: 15px; }
+
+        .fixed-pro {
+            position: absolute;
+            left: 45.45%;
+            top: 25px;
+            margin-left: -35px;
+            writing-mode: vertical-rl;
+            font-size: 60px;
+            font-weight: 900;
+            letter-spacing: -5px;
+            line-height: 1;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .details-wrapper {
+            height: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            scroll-behavior: smooth;
+        }
+        .details-wrapper::-webkit-scrollbar { display: none; }
+
+        .details-slide {
+            scroll-snap-align: start;
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            cursor: pointer; /* 增加点击提示 */
+        }
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid #000;
+            margin-top: 80px;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+            font-size: 18px;      /* 调整标题大小 */
+            font-weight: 600; 
+            padding-bottom: 10px;
+        }
+        .description {
+            font-size: 13px;
+            max-width: 400px;
+            text-transform: none;
+            text-align: justify;
+            flex-shrink: 0;
+        }
+        .image-placeholder {
+            background-color: #000;
+            width: 100%;
+            height: 47vh;
+            margin-top: auto;
+            margin-bottom: 0px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 1;
+        }
+
+        /* 全局 toast 和模糊层 */
+        #blur-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
+            opacity: 0;
+            transition: opacity 0.5s ease, backdrop-filter 0.5s ease;
+            z-index: 999;
+            pointer-events: none;
+        }
+        #blur-overlay.active {
+            opacity: 1;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        #scroll-toast {
+            position: fixed;
+            bottom: 60px;
+            right: 40px;
+            background: #000;
+            color: #fff;
+            padding: 12px 24px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        #scroll-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== 第四页 - 复制 03 内容 ===== */
+        #fourth-page {
+            z-index: 40;
+            transform: translateY(100%);
+            overflow-y: auto;
+            background: #fff;
+        }
+        #fourth-page .recruitment-page {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background-color: #FFFFFF;
+            color: #000;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+        /* 标题排版逻辑保持不变 */
+        #fourth-page .recruitment-page .title-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
             align-items: flex-start;
         }
-
-        .card-index { 
-            font-size: clamp(6rem, 12vw, 14rem); font-weight: 800; color: #000; 
-            letter-spacing: -0.06em; line-height: 0.8; margin-top: 15px; user-select: none;
+        #fourth-page .recruitment-page .title-row {
+            font-size: 7vw;
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+        }
+        #fourth-page .recruitment-page .title-and {
+            background: #000;
+            color: #fff;
+            font-size: 1.8vw;
+            padding: 12px 6px;
+            margin: 0 2vw;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            line-height: 1;
+            transform: translateY(5%);
+        }
+        #fourth-page .recruitment-page .title-offset {
+            margin-left: 6vw;
+            margin-top: 0.5vw;
+        }
+        #fourth-page .recruitment-page .content-body {
+            max-width: 500px;
+            font-size: 14px;
+            line-height: 1.8;
+            text-align: justify;
+        }
+        #fourth-page .recruitment-page .meta-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: #888;
+            text-transform: uppercase;
+        }
+        #fourth-page .recruitment-page .visitor-count {
+            font-family: monospace;
+            background: #000;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 2px;
+            font-size: 14px;
+        }
+        #fourth-page .recruitment-page .side-label {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(calc(-50% - 90px)) rotate(-90deg);
+            transform-origin: left center;
+            white-space: nowrap;
+        }
+        /* 移除了时间显示，仅保留 BACK TO TOP 按钮，且点击跳转首页，使用独立的监听器 */
+        #fourth-page .recruitment-page header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-start;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        #fourth-page .recruitment-page header .back-to-top {
+            cursor: pointer;
+            text-align: right;
+        }
+        #fourth-page .recruitment-page header .back-to-top:hover {
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        #fourth-page .recruitment-page main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4rem;
+            position: relative;
+        }
+        @media (min-width: 768px) {
+            #fourth-page .recruitment-page main {
+                flex-direction: row;
+                gap: 8rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            #fourth-page .recruitment-page main {
+                gap: 12rem;
+            }
+        }
+        #fourth-page .recruitment-page footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-top: 1px solid #000;
+            padding-top: 2rem;
+        }
+        /* 呼吸灯动画 */
+        @keyframes breathing {
+            0% { opacity: 1; color: #000; }
+            50% { opacity: 0.5; color: #666; }
+            100% { opacity: 1; color: #000; }
+        }
+        .contact-breathing {
+            animation: breathing 2s infinite ease-in-out;
         }
 
-        .card-content-right { display: flex; flex-direction: column; width: 100%; }
-        .card-category { font-size: 0.65rem; color: #aaa; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
-        .card-zh { font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 700; margin: 0 0 10px 0; letter-spacing: -0.02em; }
-        .card-subtext { font-size: 0.8rem; color: #777; line-height: 1.8; margin-bottom: 30px; max-width: 450px; }
-        
-        .img-wrap { 
-            width: 65%; 
-            max-width: 480px; 
-            aspect-ratio: 16/10; 
-            overflow: hidden; 
-            border-radius: 2px; 
-            background: #fcfcfc; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-            margin-left: 0; margin-right: auto; 
+        /* 详情面板 */
+        .stax-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--overlay-bg);
+            backdrop-filter: blur(8px);
+            z-index: var(--z-panel);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-medium);
         }
-        /* 这里的 transition opacity 改为 0.2s 以适配 0.5s 的快速切换 */
-        .img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease; }
-        .collection-card:hover .img-wrap img { transform: scale(1.04); }
-
-        .card-extra-info { border-top: 1px solid #eee; margin-top: 35px; width: 65%; max-width: 480px; }
-        .info-row { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 14px 0; border-bottom: 1px solid #eee; 
-            font-size: 0.7rem; font-weight: 600; color: #000; text-transform: uppercase;
+        .stax-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .stax-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 480px;
+            height: 100%;
+            background: #f8f8f8;
+            z-index: calc(var(--z-panel) + 1);
+            padding: 80px 50px;
+            box-shadow: -20px 0 50px rgba(0,0,0,0.05);
+            transform: translateX(100%);
+            transition: transform var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-y: auto;
+            will-change: transform;
+        }
+        .stax-panel.active { transform: translateX(0); }
+        .stax-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            font-size: 40px;
+            color: #ccc;
+            cursor: pointer;
+            transition: color var(--transition-fast), transform var(--transition-fast);
+        }
+        .stax-close:hover {
+            color: #333;
+            transform: rotate(90deg);
+        }
+        .panel-date {
+            font-family: 'Courier New', monospace;
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .panel-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            letter-spacing: -1px;
+        }
+        .panel-desc {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .panel-img {
+            width: 100%;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            filter: grayscale(100%);
+            transition: filter var(--transition-medium);
+            min-height: 200px;
+            background: #f0f0f0;
+            object-fit: cover;
+        }
+        .panel-img:hover { filter: grayscale(0); }
+        .panel-img.error {
+            filter: none;
+            object-fit: contain;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .action-link {
+            display: block;
+            padding: 15px 20px;
+            background: #fff;
+            color: #333;
+            text-decoration: none;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all var(--transition-fast);
+            text-align: center;
+        }
+        .action-link:hover {
+            background: #333;
+            color: #fff;
+            transform: translateX(5px);
         }
 
-        /* --- 其余页面样式 --- */
-        #collections-page.active-view { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        .collections-view-container { display: flex; flex-direction: column; height: 100%; padding-top: 100px; }
-        .back-nav { flex-shrink: 0; padding: 20px var(--desktop-padding); }
-        .grid-layout { display: flex; flex-wrap: nowrap; gap: 40px; padding: 0 var(--desktop-padding); overflow-x: auto; flex: 1; align-items: center; scrollbar-width: none; }
-        .grid-item { flex: 0 0 32vw; min-width: 300px; cursor: pointer; }
-        .grid-thumb { width: 100%; aspect-ratio: 1.5/1; overflow: hidden; background: #f7f7f7; margin-bottom: 15px; }
-        .grid-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        /* 其他视图 */
+        .view-section {
+            display: none;
+            opacity: 0;
+            width: 100%;
+            min-height: 100vh;
+            background: #fff;
+        }
+        .view-section.active-view {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.8s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        #detail-page { padding-top: 140px; }
-        .detail-wrapper { max-width: 1100px; margin: 0 auto; padding: 0 var(--desktop-padding) 100px; }
-        .meta-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 25px 0; margin: 40px 0; }
-        .meta-label { font-size: 0.65rem; color: #bbb; text-transform: uppercase; margin-bottom: 8px; display: block; letter-spacing: 0.05em; }
-        .meta-value { font-size: 0.85rem; font-weight: 500; }
-        .detail-description { font-size: 1rem; line-height: 1.8; color: #555; margin-bottom: 60px; max-width: 700px; }
-        .gallery-item { margin-bottom: 60px; }
-        .gallery-item img { width: 100%; height: auto; border-radius: 2px; }
-        .gallery-caption { font-size: 0.75rem; color: #999; margin-top: 15px; letter-spacing: 0.02em; }
+        /* 合集页 - 弹性布局，可单独控制卡片间距 */
+        #collections-page.active-view {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .collections-view-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding-top: 100px;
+            position: relative; /* 为回到顶部按钮定位 */
+        }
+        .back-nav {
+            flex-shrink: 0;
+            padding: 20px 50px;
+        }
+        .grid-layout {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 0 50px 40px;
+            overflow-y: auto;
+            flex: 1;
+            align-items: start;
+            scrollbar-width: none;
+        }
+        .grid-layout::-webkit-scrollbar {
+            display: none;
+        }
+        /* 卡片入场动画 */
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .grid-item {
+            background-color: #FFED00;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, background-color 0.2s, color 0.2s;
+            cursor: pointer;
+            width: 320px;          /* 默认 320x320 */
+            height: 320px;
+            border: none;
+            outline: none;
+            box-shadow: none;
+            overflow: hidden;
+            animation: slideIn 0.5s ease forwards; /* 入场动画 */
+            margin-bottom: 40px;    /* 垂直间距统一 */
+            color: #000;
+            /* 右边距将在JS中单独设置 */
+        }
+        .grid-item.wide {
+            width: 480px;           /* 宽卡片 480x320 */
+            height: 320px;
+        }
+        .grid-item.tall {
+            width: 320px;           /* 高卡片 320x480 */
+            height: 480px;
+        }
+        .grid-item.square {
+            width: 320px;
+            height: 320px;
+        }
+        /* 悬浮效果：背景变黑，文字变白，切换标题为英文 */
+        .grid-item:hover {
+            background-color: #000 !important;
+            color: #fff;
+            transform: translateY(-4px);
+        }
+        .grid-item:hover .title-zh {
+            display: none;
+        }
+        .grid-item:hover .title-en {
+            display: block;
+        }
+        .grid-item .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+        .grid-item .title-en {
+            display: none;
+        }
+        .grid-item .metadata {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: inherit; /* 继承父级颜色 */
+        }
+        .grid-item .metadata div {
+            margin-bottom: 4px;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+        .grid-item .metadata span {
+            font-weight: 600;
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 8px;
+        }
 
-        .fixed-footer { flex-shrink: 0; padding: 30px var(--desktop-padding); border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: #999; background: #fff; }
-        .footer-left a { color: #999; text-decoration: none; margin-right: 25px; }
+        /* 回到顶部按钮 */
+        #back-to-top-collections {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: #000;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: opacity 0.3s, transform 0.2s;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        #back-to-top-collections.visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        #back-to-top-collections:hover {
+            transform: scale(1.1);
+            background-color: #333;
+        }
 
+        /* ===== 详情页专用样式 ===== */
+        #detail-page {
+            height: 100vh;           /* 占满视口 */
+            overflow-y: auto;         /* 允许内部滚动 */
+            padding-top: 40px;
+            background: #fff;
+        }
+        .detail-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 var(--desktop-padding) 80px;
+        }
+        .back-link {
+            position: relative;
+            top: 40px;
+            display: inline-block;
+            cursor: pointer;
+            color: #888;
+            font-size: 0.8rem;
+            text-decoration: none;
+            margin-bottom: 20px;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .back-link:hover {
+            border-bottom: 1px solid #888;
+        }
+        #det-zh {
+            font-size: 2.5rem;
+            margin: 30px 0 0 0;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .meta-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 25px 0;
+            margin: 40px 0;
+        }
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .meta-label {
+            font-size: 0.65rem;
+            color: #bbb;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
+        .meta-value {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #000;
+        }
+        .detail-description {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 60px;
+            max-width: 700px;
+        }
+        .gallery-item {
+            margin-bottom: 60px;
+        }
+        .gallery-item img {
+            width: 65%;
+            height: auto;
+            border-radius: 2px;
+            background: #f7f7f7;
+        }
+        .gallery-caption {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 15px;
+            letter-spacing: 0.02em;
+        }
+        .detail-footer {
+            margin-top: 80px;
+            padding: 30px var(--desktop-padding) 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.72rem;
+            color: #999;
+            background: #fff;
+        }
+        .footer-links a {
+            color: #999;
+            text-decoration: none;
+            margin-right: 25px;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
         @media (max-width: 900px) {
-            .card-inner-wrapper { grid-template-columns: 1fr; gap: 20px; }
-            .card-index { font-size: 5rem; margin-top: 0; }
-            .img-wrap, .card-extra-info { width: 100%; max-width: 100%; }
-            .collection-card { height: auto; padding: 100px var(--desktop-padding); position: static; }
-            .meta-bar { grid-template-columns: 1fr 1fr; }
-            .grid-item { flex: 0 0 80vw; }
+            .meta-bar {
+                grid-template-columns: 1fr 1fr;
+            }
+            #det-zh {
+                font-size: 2rem;
+            }
+        }
+
+        /* 轮播图片样式 */
+        .carousel-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+        .image-placeholder {
+            overflow: hidden;
         }
     </style>
 </head>
 <body id="page-body">
+    <!-- 模糊层和toast -->
+    <div id="blur-overlay"></div>
+    <div id="scroll-toast">更多请查看合集 / VIEW MORE IN COLLECTIONS</div>
 
-    <nav class="navbar">
+    <!-- 导航栏 (02样式) -->
+    <nav class="navbar" id="mainNavbar">
         <div class="nav-container">
-            <div class="logo" onclick="window.location.hash='';">VISION ARCHIVE</div>
+            <div class="logo" id="logo">LE WANG</div>
             <ul class="nav-links">
-                <li><a href="#" data-nav="home">HOME / 首页</a></li>
-                <li><a href="#collections" data-nav="collections">COLLECTIONS / 合集</a></li>
-                <li><a href="#about" data-nav="about">ABOUT / 关于</a></li>
-                <li><a href="#contact" data-nav="contact">CONTACT / 联系</a></li>
+                <li data-nav="home">HOME <span class="cn">/ 首页</span></li>
+                <li data-nav="collections">COLLECTIONS <span class="cn">/ 合集</span></li>
+                <li data-nav="about">ABOUT <span class="cn">/ 关于</span></li>
+                <li data-nav="contact">CONTACT <span class="cn">/ 联系</span></li>
             </ul>
         </div>
     </nav>
 
-    <div id="main-wrapper">
-        <main id="landing-page" class="view-section active-view">
-            <section class="landing-hero">
-                <div class="hero-cover-container"><img src="images/0.jpg"></div>
-                <div class="hero-text-area"><h1 class="hero-title">Vision<br>Archive</h1></div>
-            </section>
-            <div class="collections-grid" id="main-grid"></div>
-            <footer class="fixed-footer" id="contact-section" style="border:none; padding:120px var(--desktop-padding);">
-                <div class="footer-left">
-                    <a href="#">@2026 VISION ARCHIVE</a>
-                    <a href="mailto:contact@visionarchive.me">Email / 邮件</a>
+    <!-- 时钟 -->
+    <div class="clock">
+        <span id="live-clock">--:--:--</span><br>
+        <span class="timezone">UTC+8</span>
+    </div>
+
+    <!-- 详情面板 -->
+    <div class="stax-overlay" id="staxOverlay"></div>
+    <div class="stax-panel" id="staxPanel">
+        <div class="stax-close" id="staxCloseBtn">×</div>
+        <img id="staxPanelImg" class="panel-img" src="" alt="">
+        <div class="panel-date" id="staxPanelDate"></div>
+        <h2 class="panel-title" id="staxPanelTitle"></h2>
+        <div class="panel-desc" id="staxPanelDesc"></div>
+        <div class="links" id="staxPanelLinks"></div>
+    </div>
+
+    <!-- 欢迎页 -->
+    <div id="welcome-page" class="fixed-page">
+        <header class="stax-header">
+            <h1>Welcome to explore my visual portfolio<br>through interactive<br>means.</h1>
+            <div class="stax-status">
+                <span class="stax-dot"></span> Getting ready to go 
+                <a class="stax-contact-link" id="staxContactHeader">CONTACT.</a>
+            </div>
+        </header>
+        <div class="stax-cards" id="staxCards">
+            <div class="stax-card stax" data-title="OhMyKing's Space" data-date="2025" data-desc="Interactive Space." data-img="">HOME<span class="card-zh">首页</span><div class="watermark">ST<br>AX</div></div>
+            <div class="stax-card stax-dark" data-title="AI Archive" data-date="2025" data-desc="Digital Works." data-img="" data-action="works">WORK<span class="card-zh">作品</span><div class="watermark">AI</div></div>
+            <div class="stax-card truffle" data-title="About Me" data-date="2026" data-desc="Designer." data-img="" data-route="#about">ABOUT<span class="card-zh">关于</span><div class="watermark">TR<br>FL</div></div>
+            <div class="stax-card cnn" data-title="Get In Touch" data-date="Available Now" data-desc="选择以下方式与我取得联系，我通常会在 24 小时内回复。" data-img="https://images.unsplash.com/photo-1534536281715-e28d76689b4d?auto=format&fit=crop&w=600&q=80" data-links="发送邮件|mailto:yourname@example.com,微信联系|#,GitHub 个人主页|https://github.com/yourusername" data-action="contact">CONTACT<span class="card-zh">联系方式</span><div class="watermark">CNN</div></div>
+            <div class="stax-card prototype is-future">FUTURE <span class="card-zh">尚未解锁</span><div class="watermark">PR<br>TO</div></div>
+            <div class="stax-card substack is-future">FUTURE <span class="card-zh">敬请期待</span><div class="watermark">SUB</div></div>
+            <div class="stax-card dribbble is-future">FUTURE <span class="card-zh">锁定</span><div class="watermark">DRB</div></div>
+            <div class="stax-card linkedin is-future">FUTURE <span class="card-zh">待续</span><div class="watermark">IN</div></div>
+            <div class="stax-card email is-future">EMAIL <span class="card-zh">加载中</span><div class="watermark"></div></div>
+            <div class="stax-card resume is-future"><span class="card-zh"></span><div class="watermark">RE<br>SU<br>ME</div></div>
+        </div>
+    </div>
+
+    <!-- 图片页 (LAB Studio) -->
+    <div id="image-page" class="fixed-page">
+        <div class="h-screen w-full flex flex-col p-6 md:p-10 box-border">
+            <header class="flex justify-between items-start shrink-0">
+                <div class="text-[10px] uppercase tracking-widest [writing-mode:vertical-lr] rotate-180 opacity-0" 
+                     style="animation: elementPop 0.5s var(--spring-easing) forwards 0.6s;">
+                    Nice to meet you.
                 </div>
-                <div class="page-views">SCROLL TO TOP / 返回顶部</div>
+            </header>
+            <main class="flex-grow flex flex-col justify-start relative overflow-hidden">
+                <div class="lab-title-container flex flex-col items-start" style="transform: translateX(20px);">
+                    <h1 class="hero-title select-none" style="margin-left: -20px; letter-spacing: -0.05em;margin-top: -10px">LAB</h1>
+                    <div class="mt-4 max-w-xl opacity-0" style="margin-top: 36px;animation: elementPop 0.5s var(--spring-easing) 0.2s forwards;">
+                        <p class="text-xl md:text-2xl font-black leading-tight">
+                            Multidisciplinary creative work, focusing on branding, space, and signage.
+                        </p>
+                    </div>
+                </div>
+            </main>
+            <footer class="shrink-0">
+                <div class="footer-line pt-4 ml-[20px] flex justify-between items-end">
+                    <div class="flex flex-col flex-grow">
+                        <span class="text-[10px] font-black uppercase tracking-widest mb-4 opacity-0" 
+                              style="animation: elementPop 0.4s var(--spring-easing) forwards 0.35s;">
+                            Featured Work
+                        </span>
+                        
+                        <div class="folder-list-container">
+                            <div class="list-item">
+                                <span style="font-weight: 550; font-size: 1.3rem;opacity: 0.8;">JINKYHUANG × 中日IP“孙悟空与阿童木”主题展</span>
+                                <span class="text-lg opacity-50 ml-4"style="font-weight: 500;">2025.10 - 上海</span>
+                            </div>
+                            <div class="list-item">
+                            <span style="font-weight: 550; font-size: 1.3rem;opacity: 0.8;">JINKYHUANG × 三丽鸥 HELLOKITTY IP主题展</span>
+                                <span class="text-lg opacity-50 ml-4"style="font-weight: 500;">2025.08 - 苏州</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-right ml-10 shrink-0 opacity-0" 
+                         style="animation: elementPop 0.6s var(--spring-easing) forwards 0.55s;">
+                        <div class="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">1of 2</div>
+                        <div class="text-[10px] font-bold uppercase tracking-widest mt-2">You vs. Yesterday</div>
+                    </div>
+                </div>
             </footer>
-        </main>
+        </div>
+    </div>
 
-        <main id="collections-page" class="view-section">
-            <div class="collections-view-container">
-                <div class="back-nav"><a onclick="window.location.hash=''" style="cursor:pointer; color:#888; font-size:0.75rem;">← BACK TO HOME</a></div>
-                <div class="grid-layout" id="collections-grid-target"></div>
-                <footer class="fixed-footer">
-                    <div class="footer-left"><a>@VISION ARCHIVE</a><a>EMAIL</a></div>
-                    <div class="page-views" id="visitor-display">SCROLL TO EXPLORE / 左右滑动</div>
-                </footer>
-            </div>
-        </main>
+    <!-- 作品展示页（第三页）- 已替换为轮播图片 -->
+    <div id="works-page" class="fixed-page">
+        <main>
+            <section class="left-column">
+                <div class="project-list">
+                    <div class="project-item active" data-index="0"><span>01</span> JINKYHUANG ×“孙悟空与阿童木” </div>
+                    <div class="project-item" data-index="1"><span>02</span> JINKYHUANG × 三丽鸥 HELLO KITTY</div>
+                    <div class="project-item" data-index="2"><span>03</span> Mutina 意大利瓷砖 - 北京展厅</div>
+                    <div class="project-item" data-action="show-toast"><span>04</span> 南通明富纺藏 - 上海纺织博览会</div>
+                    <div class="project-item" data-action="show-toast"><span>05</span> URBAN LIVING - CPI快闪</div>
+                    <div class="more-dots" id="more-collections">更多请查看合集...</div>
+                </div>
+            </section>
 
-        <main id="about-page" class="view-section">
-            <div class="detail-wrapper">
-                <a onclick="window.location.hash=''" style="cursor:pointer; color:#888; font-size: 0.8rem;">← BACK / 返回</a>
-                <h1 style="font-size: 3rem; margin: 40px 0 20px;">About / 关于</h1>
-                <p style="line-height: 2; color: #555; font-size: 1.1rem;">专注于捕捉光影与空间的细微关系。</p>
-            </div>
-        </main>
+            <div class="fixed-pro">PRO</div>
+            
+            <div class="details-wrapper">
+                <section class="details-slide" data-index="0">
+                    <div class="details-header">
+                        <h3>JINKYHUANG × “孙悟空与阿童木”中日IP联名展</h3>
+                        <span>10-2025</span>
+                    </div>
+                    <p class="description">齐天大圣孙悟空×铁臂阿童木×黄小眠IP展位于上海BFC外滩金融中心内，此次展览中日经典动画形象首次“同框”。</p>
+                    <div class="image-placeholder">
+                        <img class="carousel-img" data-proj="0" data-current="0" src="images/1.jpg" alt="Project 0" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23f5f5f5\'/%3E%3Ctext x=\'50\' y=\'115\' font-family=\'Arial\' font-size=\'14\' fill=\'%23999\'%3E图片加载失败%3C/text%3E%3C/svg%3E';">
+                    </div>
+                </section>
 
-        <main id="detail-page" class="view-section">
-            <div class="detail-wrapper">
-                <a onclick="window.location.hash='#collections'" style="cursor:pointer; color:#888; font-size: 0.8rem;">← BACK / 返回</a>
-                <h1 id="det-zh" style="font-size: 2.5rem; margin: 30px 0 0 0;"></h1>
-                <div class="meta-bar"></div>
-                <div id="det-desc" class="detail-description"></div>
-                <div id="det-images"></div>
+                <section class="details-slide" data-index="1">
+                    <div class="details-header">
+                        <h3>JINKYHUANG × 三丽鸥 HELLOKITTY IP联名展</h3>
+                        <span>08-2025</span>
+                    </div>
+                    <p class="description">三丽鸥HELLO KITTY展「游园径柘」通过非物质文化遗产昆曲《牡丹亭》为创意脉络，在苏式园林的诗意框架内提供艺术展览、文化交流等多样化功能。</p>
+                    <div class="image-placeholder">
+                        <img class="carousel-img" data-proj="1" data-current="0" src="images/3.jpg" alt="Project 1" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23f5f5f5\'/%3E%3Ctext x=\'50\' y=\'115\' font-family=\'Arial\' font-size=\'14\' fill=\'%23999\'%3E图片加载失败%3C/text%3E%3C/svg%3E';">
+                    </div>
+                </section>
+
+                <section class="details-slide" data-index="2">
+                    <div class="details-header">
+                        <h3>Mutina 意大利瓷砖品牌定制化展厅</h3>
+                        <span>06-2025</span>
+                    </div>
+                    <p class="description">意大利先锋陶瓷品牌Mutina 以材质为媒介、以展览为形式，展开一场“陶瓷如何成为思维方式”的探索。项目取代传统陶瓷销售展示，通过艺术策展的形式铺陈作品。</p>
+                    <div class="image-placeholder">
+                        <img class="carousel-img" data-proj="2" data-current="0" src="images/5.jpg" alt="Project 2" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23f5f5f5\'/%3E%3Ctext x=\'50\' y=\'115\' font-family=\'Arial\' font-size=\'14\' fill=\'%23999\'%3E图片加载失败%3C/text%3E%3C/svg%3E';">
+                    </div>
+                </section>
             </div>
         </main>
     </div>
 
-    <script>
-        const collections = [
-            { 
-                zh: "荒野之境", en: "Silence", cat: "Nature", loc: "Turkey", yr: "2023", role: "Photographer", views: "42,100",
-                desc: "在土耳其的荒原中，建筑与自然形成了一种无声的张力。",
-                // 修改此处：增加多张图片url用于首页循环
-                images: [
-                    { url: "1.jpg", name: "The Silence" },
-                    { url: "2.jpg", name: "The Void" },
-                    { url: "3.jpg", name: "The Horizon" }
-                ] 
-            },
-            { 
-                zh: "光影之隙", en: "Urban", cat: "Cityscape", loc: "Shanghai", yr: "2024", role: "Photographer", views: "38,500",
-                desc: "建筑与时间的无声对话。上海的街道在晨昏交替之际。",
-                images: [
-                    { url: "3.jpg", name: "Motion Ecosystem" },
-                    { url: "4.jpg", name: "Flow" },
-                    { url: "5.jpg", name: "Structure" }
-                ] 
-            },
-            { 
-                zh: "极简构筑", en: "Geometry", cat: "Minimalism", loc: "Berlin", yr: "2024", role: "Photographer", views: "29,400",
-                desc: "回归纯粹的几何。这组作品剥离了所有的繁杂。",
-                images: [
-                    { url: "5.jpg", name: "Next 2022" },
-                    { url: "6.jpg", name: "Cube" },
-                    { url: "1.jpg", name: "Balance" }
-                ] 
-            }
-        ];
+    <!-- 第四页 - 包含招募内容，且 BACK TO TOP 改为跳转首页，添加呼吸灯效果 -->
+    <div id="fourth-page" class="fixed-page">
+        <div class="recruitment-page">
+            <header class="flex justify-end items-start uppercase text-[11px] font-bold">
+                <div class="back-to-top" id="backToTopBtn">
+                    BACK TO TOP /<br>回到顶部 ↑
+                </div>
+            </header>
 
-        const mainGrid = document.getElementById('main-grid');
-        collections.forEach((item, index) => {
-            const card = document.createElement('div');
-            card.className = 'collection-card';
-            card.onclick = () => window.location.hash = `project-${index}`;
-            card.innerHTML = `
-                <div class="card-inner-wrapper">
-                    <div class="card-index">${index + 1}</div>
-                    <div class="card-content-right">
-                        <div class="card-category">(${item.en.toUpperCase()} / ${item.cat})</div>
-                        <div class="card-zh">${item.zh}</div>
-                        <div class="card-subtext">A curated collection of ${item.en.toLowerCase()} through the lens of space and time.</div>
-                        <div class="img-wrap">
-                            <img src="images/${item.images[0].url}" class="loop-img" data-proj="${index}" data-current="0">
-                        </div>
-                        <div class="card-extra-info">
-                            <div class="info-row"><span>GUIDELINES / 指南</span><span>+</span></div>
-                        </div>
+            <main class="flex-grow flex flex-col md:flex-row items-center justify-center gap-16 lg:gap-32 relative">
+                
+                <div class="side-label meta-label hidden lg:block">
+                    Nice to meet you. / 2026
+                </div>
+
+                <div class="title-wrapper">
+                    <div class="title-row">
+                        <span>关于</span>
+                        <span class="title-and uppercase">and</span>
                     </div>
-                </div>`;
-            mainGrid.appendChild(card);
-        });
+                    <div class="title-row title-offset">
+                        <span>联系</span>
+                    </div>
+                </div>
 
-        // 新增：首页图片自动循环播放函数 (0.5s)
-        function initImageLoop() {
-            setInterval(() => {
-                const images = document.querySelectorAll('.loop-img');
-                images.forEach(img => {
-                    const projIdx = img.getAttribute('data-proj');
-                    const currentImgIdx = parseInt(img.getAttribute('data-current'));
-                    const projectData = collections[projIdx];
-                    
-                    if (projectData.images.length > 1) {
-                        const nextIdx = (currentImgIdx + 1) % projectData.images.length;
-                        
-                        // 执行切换
-                        img.style.opacity = '0.9'; // 快速切换时的视觉缓冲
+                <div class="content-body">
+                    <p class="font-bold mb-4 text-xl">设计/策划/执行</p>
+                    <p class="mb-6 opacity-80">
+                        我正在寻找一家对设计与生活都充满热情的公司。在那里，我希望深度参与各类项目，努力提升专业能力，与团队伙伴一起协作，将创意落地。
+                    </p>
+                    <div class="space-y-4">
+                        <p>
+                            <strong class="font-bold">是一个有趣的“人”：</strong> 对世界充满好奇，勤于思考和学习，能独立思考并清晰表达。
+                        </p>
+                        <p>
+                            <strong class="font-bold">是一位专业的“伙伴”：</strong> 拥有良好的空间感和逻辑表达能力，对色彩和形式有自己独特的敏感与见解。能熟练运用各类设计工具，无论是用于空间的CAD、SketchUp或3D Max，还是用于视觉表达的Ps、Ai等等。
+                        </p>
+                        <p>
+                            <strong class="font-bold"></strong> 如果你对我感兴趣，欢迎联系我！
+                        </p>
+
+                    </div>
+                </div>
+            </main>
+
+            <footer class="flex justify-between items-end border-t border-black pt-8">
+                <div>
+                    <div class="meta-label mb-2">CONTACT / INQUIRIES</div>
+                    <h2 class="text-2xl font-black uppercase tracking-tighter contact-breathing">联系请点击</h2> <!-- 纯文本，呼吸灯效果 -->
+                    <div class="flex gap-4 mt-2 text-[10px] font-bold uppercase">
+                        <a href="https://www.xiaohongshu.com/user/profile/placeholder" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:underline text-[11px]">小红书 Xiaohongshu</a>
+                        <a href="mailto:contact@example.com" class="text-green-600 hover:underline text-[11px]">邮箱 Email</a>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col items-end gap-2">
+                    <span class="meta-label">Been here (visitor)</span>
+                    <span class="visitor-count">00014,392</span>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- 合集网格页 - 弹性布局，可单独控制卡片间距 -->
+    <main id="collections-page" class="view-section">
+        <div class="collections-view-container">
+            <div class="back-nav"><a onclick="window.location.hash='#home'" style="cursor:pointer; color:#888; font-size:0.75rem;">← BACK TO HOME</a></div>
+            <div class="grid-layout" id="collections-grid-target"></div>
+            <!-- 底部文字已完全移除 -->
+        </div>
+    </main>
+
+    <!-- 全局回到顶部按钮（仅合集页显示） -->
+    <div id="back-to-top-collections" title="回到顶部">↑</div>
+
+    <!-- 详情页 (独立版本，支持滚动和返回按钮) -->
+    <main id="detail-page" class="view-section fade-in">
+        <div class="detail-wrapper">
+            <!-- 返回链接：根据来源执行不同返回逻辑 -->
+            <a class="back-link" onclick="handleDetailBack()" title="返回">← BACK / 返回</a>
+            
+            <!-- 动态填充区 -->
+            <h1 id="det-zh"></h1>
+            <div class="meta-bar" id="meta-bar"></div>
+            <div id="det-desc" class="detail-description"></div>
+            <div id="det-images"></div>
+        </div>
+
+        <!-- 简洁脚注 -->
+        <div class="detail-footer">
+            <div class="footer-links">
+                <a href="#" onclick="window.location.hash='#home'">点击跳转首页</a>
+                <a href="#">©2026</a>
+            </div>
+            <div class="page-views" id="view-count-indicator"></div>
+        </div>
+    </main>
+
+    <script>
+        (function() {
+            const CONFIG = {
+                IMAGES: {
+                    BASE_PATH: 'images/',
+                    FALLBACK: 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23f5f5f5\'/%3E%3Ctext x=\'50\' y=\'115\' font-family=\'Arial\' font-size=\'14\' fill=\'%23999\'%3E图片加载失败%3C/text%3E%3C/svg%3E'
+                },
+                SWIPE: { MIN_DISTANCE: 50 },
+                ANIMATION: { CARD_REVEAL_DELAY: 100 }
+            };
+
+            const Utils = {
+                handleImageError(img) {
+                    if (img) {
+                        img.classList.add('error');
+                        img.src = CONFIG.IMAGES.FALLBACK;
+                    }
+                },
+                preloadImage(src) {
+                    return new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.onload = () => resolve(src);
+                        img.onerror = () => reject(new Error('图片加载失败'));
+                        img.src = src;
+                    });
+                },
+                getImageUrl(filename) {
+                    return CONFIG.IMAGES.BASE_PATH + filename;
+                }
+            };
+            window.Utils = Utils;
+
+            const DOM = {
+                body: document.getElementById('page-body'),
+                navbar: document.getElementById('mainNavbar'),
+                logo: document.getElementById('logo'),
+                staxCards: document.querySelector('.stax-cards'),
+                staxOverlay: document.getElementById('staxOverlay'),
+                staxPanel: document.getElementById('staxPanel'),
+                staxClose: document.getElementById('staxCloseBtn'),
+                staxPanelImg: document.getElementById('staxPanelImg'),
+                staxPanelDate: document.getElementById('staxPanelDate'),
+                staxPanelTitle: document.getElementById('staxPanelTitle'),
+                staxPanelDesc: document.getElementById('staxPanelDesc'),
+                staxPanelLinks: document.getElementById('staxPanelLinks'),
+                contactHeader: document.getElementById('staxContactHeader'),
+                navLinks: document.querySelectorAll('.nav-links li'),
+                mainGrid: document.getElementById('main-grid'),
+                collectionsGridTarget: document.getElementById('collections-grid-target'),
+                detZh: document.getElementById('det-zh'),
+                detDesc: document.getElementById('det-desc'),
+                detImages: document.getElementById('det-images'),
+                detailMetaBar: document.querySelector('#detail-page .meta-bar'),
+                viewCountIndicator: document.getElementById('view-count-indicator'),
+                welcomePage: document.getElementById('welcome-page'),
+                imagePage: document.getElementById('image-page'),
+                worksPage: document.getElementById('works-page'),
+                fourthPage: document.getElementById('fourth-page'),
+                collectionsPage: document.getElementById('collections-page'),
+                // 新增02相关元素
+                projectItems: document.querySelectorAll('.project-item'),
+                detailsWrapper: document.querySelector('.details-wrapper'),
+                detailsSlides: document.querySelectorAll('.details-slide'),
+                clockElement: document.getElementById('live-clock'),
+                clockDiv: document.querySelector('.clock'), // 时钟容器
+                toast: document.getElementById('scroll-toast'),
+                overlay: document.getElementById('blur-overlay'),
+                // 第四页联系元素 - 已移除 contactEmail 和 contactPopup
+                moreCollections: document.getElementById('more-collections'),
+                backToTopBtn: document.getElementById('backToTopBtn'),
+                backToTopCollections: document.getElementById('back-to-top-collections') // 合集页回到顶部按钮
+            };
+
+            // 七个项目数据 (扩充至7个)
+            const collections = [
+                { 
+                    zh: "JINKYHUANG × 孙悟空 × 阿童木", en: "THE MONKEY KING x ASTRO BOY", cat: "IP潮玩", loc: "中国上海", yr: "2025.10", role: "Photographer", views: "42,100",
+                    desc: "在土耳其的荒原中，建筑与自然形成了一种无声的张力。",
+                    images: [ { url: "1.jpg", name: "The Silence" }, { url: "2.jpg", name: "The Void" }, { url: "3.jpg", name: "The Horizon" } ] 
+                },
+                { 
+                    zh: "JINKYHUANG x 三丽鸥HELLO KITTY", en: "JINKYHUANG x HELLO KITTY", cat: "潮玩IP", loc: "中国苏州", yr: "2025.08", role: "Photographer", views: "38,500",
+                    desc: "建筑与时间的无声对话。上海的街道在晨昏交替之际。",
+                    images: [ { url: "3.jpg", name: "Motion Ecosystem" }, { url: "4.jpg", name: "Flow" }, { url: "5.jpg", name: "Structure" } ] 
+                },
+                { 
+                    zh: "Mutina 意大利瓷砖北京展厅", en: "Mutina Beijing Exhibition Hall", cat: "商业品牌", loc: "中国北京", yr: "2025.06", role: "Photographer", views: "29,400",
+                    desc: "回归纯粹的几何。这组作品剥离了所有的繁杂。",
+                    images: [ { url: "5.jpg", name: "Next 2022" }, { url: "6.jpg", name: "Cube" }, { url: "1.jpg", name: "Balance" } ] 
+                },
+                { 
+                    zh: "Eastcom Park", en: "Eastcom Park", cat: "Commercial Brand", loc: "Hangzhou China", yr: "2023.11", role: "Photographer", views: "31,200",
+                    desc: "捕捉东京夜晚的流动与光影。",
+                    images: [ { url: "2.jpg", name: "Neon Lights" }, { url: "3.jpg", name: "Street Flow" }, { url: "4.jpg", name: "Night Pulse" } ] 
+                },
+                { 
+                    zh: "木棉空间", en: "Kapok Space", cat: "商业品牌", loc: "中国上海", yr: "2025.03", role: "Photographer", views: "27,800",
+                    desc: "挪威峡湾的静谧与壮阔。",
+                    images: [ { url: "1.jpg", name: "Fjord Dawn" }, { url: "5.jpg", name: "Mountain Mist" }, { url: "6.jpg", name: "Arctic Light" } ] 
+                },
+                { 
+                    zh: "都室·麓湖CPI快闪空间", en: "Dushi · Luhu CPI Pop-up Space", cat: "商业品牌", loc: "中国成都", yr: "2025.02", role: "Photographer", views: "19,600",
+                    desc: "城市建筑中的线条与几何。",
+                    images: [ { url: "4.jpg", name: "Steel Lines" }, { url: "3.jpg", name: "Glass Facade" }, { url: "2.jpg", name: "Concrete Rhythm" } ] 
+                },
+                { 
+                    zh: "DUSIT THANI · TIANMU MOUNTAIN", en: "DUSIT THANI", cat: "wayfinding system design", loc: "Hangzhou China", yr: "2022.7", role: "Photographer", views: "14,300",
+                    desc: "关于时间与记忆的视觉拼贴。",
+                    images: [ { url: "6.jpg", name: "Fading" }, { url: "1.jpg", name: "Echo" }, { url: "5.jpg", name: "Remnants" } ] 
+                }
+            ];
+
+            // 占位项目数据（用于无限滚动和初始随机卡片）
+            const placeholderItem = {
+                zh: "未完成",
+                cat: "敬请期待",
+                loc: "",
+                yr: ""
+            };
+
+            let isScrolling = false;
+            let currentView = 'welcome';
+            let isPanelOpen = false;
+            let userNavigation = false; // 标记是否为用户主动点击导航
+
+            // 02 的交互变量
+            let isToastShowing = false;
+
+            // 记录详情页进入来源
+            let detailEntrySource = null; // 'collections' 或 'works'
+
+            // 重置卡片动画
+            function resetStaxCardsAnimation() {
+                const cards = document.querySelectorAll('.stax-card');
+                cards.forEach(card => card.classList.remove('reveal'));
+                requestAnimationFrame(() => {
+                    cards.forEach((card, i) => {
                         setTimeout(() => {
-                            img.src = `images/${projectData.images[nextIdx].url}`;
-                            img.setAttribute('data-current', nextIdx);
-                            img.style.opacity = '1';
-                        }, 50); 
+                            card.classList.add('reveal');
+                        }, i * CONFIG.ANIMATION.CARD_REVEAL_DELAY);
+                    });
+                });
+            }
+
+            // 渲染作品页 (原01的，但第三页已替换，不再需要)
+            function renderWorksPage() {
+                // 保留空函数
+            }
+
+            // 生成随机尺寸类（用于追加的卡片）
+            const sizeTypes = ['', 'wide', 'tall', 'square']; // '' 是普通 320x320
+
+            // 追加新卡片（无限滚动）- 全部为占位卡片
+            function appendMoreCards() {
+                const container = DOM.collectionsGridTarget;
+                const fragment = document.createDocumentFragment();
+                // 一次追加7个随机卡片，每个设置默认右边距（此处简单设置为40px，可根据需要调整）
+                for (let i = 0; i < 7; i++) {
+                    const sizeClass = sizeTypes[Math.floor(Math.random() * sizeTypes.length)];
+                    const card = document.createElement('div');
+                    card.className = `grid-item ${sizeClass}`;
+                    // 设置默认右边距为40px（可根据需要修改）
+                    card.style.marginRight = '40px';
+                    // 不设置 onclick，使点击无效
+                    card.innerHTML = `
+                        <div class="title title-zh">${placeholderItem.zh}</div>
+                        <div class="title title-en" style="display: none;">${placeholderItem.zh}</div>
+                        <div class="metadata">
+                            <div>类型</div>
+                            <span>${placeholderItem.cat}</span>
+                            <div>Location</div>
+                            <span>${placeholderItem.loc}</span>
+                            <div>Time</div>
+                            <span>${placeholderItem.yr}</span>
+                        </div>
+                    `;
+                    fragment.appendChild(card);
+                }
+                container.appendChild(fragment);
+            }
+
+            // 初始化无限滚动监听
+            function initInfiniteScroll() {
+                const grid = DOM.collectionsGridTarget;
+                if (!grid) return;
+                let isLoading = false;
+                grid.addEventListener('scroll', () => {
+                    if (isLoading) return;
+                    const scrollTop = grid.scrollTop;
+                    const clientHeight = grid.clientHeight;
+                    const scrollHeight = grid.scrollHeight;
+                    // 当滚动到距离底部100px时加载更多
+                    if (scrollTop + clientHeight >= scrollHeight - 100) {
+                        isLoading = true;
+                        appendMoreCards();
+                        // 延迟解除锁定，避免短时间内多次触发
+                        setTimeout(() => { isLoading = false; }, 200);
                     }
                 });
-            }, 1000); // 0.5秒切换频率
-        }
-
-        function handleRoute() {
-            const hash = window.location.hash;
-            const sections = document.querySelectorAll('.view-section');
-            const navLinks = document.querySelectorAll('.nav-links a');
-            document.getElementById('page-body').classList.remove('lock-scroll');
-            sections.forEach(s => s.classList.remove('active-view'));
-            navLinks.forEach(l => l.classList.remove('active'));
-
-            if (hash === '#collections') {
-                renderCollectionsGrid();
-                document.getElementById('collections-page').classList.add('active-view');
-                document.querySelector('[data-nav="collections"]').classList.add('active');
-                document.getElementById('page-body').classList.add('lock-scroll');
-            } 
-            else if (hash.startsWith('#project-')) {
-                renderDetail(hash.split('-')[1]);
-                document.getElementById('detail-page').classList.add('active-view');
-                window.scrollTo(0,0);
-            } 
-            else if (hash === '#about') {
-                document.getElementById('about-page').classList.add('active-view');
-                document.querySelector('[data-nav="about"]').classList.add('active');
-            } 
-            else if (hash === '#contact') {
-                document.getElementById('landing-page').classList.add('active-view');
-                document.querySelector('[data-nav="contact"]').classList.add('active');
-                document.getElementById('contact-section').scrollIntoView({ behavior: 'smooth' });
             }
-            else {
-                document.getElementById('landing-page').classList.add('active-view');
-                document.querySelector('[data-nav="home"]').classList.add('active');
+
+            function renderCollectionsGrid() {
+                if (!DOM.collectionsGridTarget) return;
+
+                // 清空容器
+                DOM.collectionsGridTarget.innerHTML = '';
+
+                // 前两行固定尺寸模式（共6个卡片）- 使用真实项目数据
+                const fixedPattern = [
+                    // 第一行：普通、宽、宽
+                    { size: '' },      // 320x320
+                    { size: 'wide' },  // 480x320
+                    { size: 'wide' },  // 480x320
+                    // 第二行：高、高、普通
+                    { size: 'tall' },  // 320x480
+                    { size: 'tall' },  // 320x480
+                    { size: '' }       // 320x320
+                ];
+
+                // 定义每个卡片的右边距（单位px），索引与 fixedPattern 对应
+                const marginRights = [40, 40, 0, 40, 40, 0];
+
+                // 生成前6个固定卡片（真实项目）
+                for (let i = 0; i < fixedPattern.length; i++) {
+                    const randomIndex = Math.floor(Math.random() * collections.length);
+                    const item = collections[randomIndex];
+                    const sizeClass = fixedPattern[i].size;
+                    const card = document.createElement('div');
+                    card.className = `grid-item ${sizeClass}`;
+                    card.style.marginRight = marginRights[i] + 'px';
+                    card.setAttribute('onclick', `window.location.hash='project-${randomIndex}'`);
+                    card.innerHTML = `
+                        <div>
+                            <div class="title title-zh">${item.zh}</div>
+                            <div class="title title-en">${item.en}</div>
+                        </div>
+                        <div class="metadata">
+                            <div>类型</div>
+                            <span>${item.cat}</span>
+                            <div>区域</div>
+                            <span>${item.loc}</span>
+                            <div>时间</div>
+                            <span>${item.yr}</span>
+                        </div>
+                    `;
+                    DOM.collectionsGridTarget.appendChild(card);
+                }
+
+                // 强制换行
+                const breakDiv = document.createElement('div');
+                breakDiv.style.flexBasis = '100%';
+                breakDiv.style.height = '0';
+                breakDiv.style.overflow = 'hidden';
+                DOM.collectionsGridTarget.appendChild(breakDiv);
+
+                // 追加随机卡片
+                for (let i = 0; i < 7; i++) {
+                    const sizeClass = sizeTypes[Math.floor(Math.random() * sizeTypes.length)];
+                    const card = document.createElement('div');
+                    card.className = `grid-item ${sizeClass}`;
+                    card.style.marginRight = '40px';
+                    card.innerHTML = `
+                        <div>
+                            <div class="title title-zh">${placeholderItem.zh}</div>
+                            <div class="title title-en" style="display: none;">${placeholderItem.zh}</div>
+                        </div>
+                        <div class="metadata">
+                            <div>Portfolio</div>
+                            <span>${placeholderItem.cat}</span>
+                            <div>Location</div>
+                            <span>${placeholderItem.loc}</span>
+                            <div>Time</div>
+                            <span>${placeholderItem.yr}</span>
+                        </div>
+                    `;
+                    DOM.collectionsGridTarget.appendChild(card);
+                }
+
+                initInfiniteScroll();
             }
-        }
 
-        function renderCollectionsGrid() {
-            const target = document.getElementById('collections-grid-target');
-            target.innerHTML = collections.map((item, index) => `
-                <div class="grid-item" onclick="window.location.hash='project-${index}'">
-                    <div class="grid-thumb"><img src="images/${item.images[0].url}"></div>
-                    <div style="font-size:0.75rem; font-weight:500;">${item.zh} / ${item.en.toUpperCase()}</div>
-                </div>
-            `).join('');
+            // ===== 详情页渲染函数 =====
+            function renderDetailPage(index) {
+                let projectIndex = parseInt(index, 10);
+                if (isNaN(projectIndex) || projectIndex < 0 || projectIndex >= collections.length) {
+                    projectIndex = 0;
+                }
+                const data = collections[projectIndex];
+                if (!data) return;
 
-            const totalViews = collections.reduce((acc, curr) => acc + parseInt(curr.views.replace(/,/g, '')), 0);
-            const visitorDisplay = document.getElementById('visitor-display');
-            if(visitorDisplay) {
-                visitorDisplay.innerHTML = `SCROLL TO EXPLORE / 左右滑动 &nbsp;&nbsp; TOTAL VIEWS: ${totalViews.toLocaleString()}`;
+                // 主标题
+                if (DOM.detZh) DOM.detZh.innerText = data.zh;
+
+                // meta 栅格
+                if (DOM.detailMetaBar) {
+                    DOM.detailMetaBar.innerHTML = `
+                        <div class="meta-item"><span class="meta-label">Category / 类别</span><span class="meta-value">${data.cat}</span></div>
+                        <div class="meta-item"><span class="meta-label">Location / 地点</span><span class="meta-value">${data.loc}</span></div>
+                        <div class="meta-item"><span class="meta-label">Year / 年份</span><span class="meta-value">${data.yr}</span></div>
+                        <div class="meta-item"><span class="meta-label">Role / 角色</span><span class="meta-value">${data.role}</span></div>
+                    `;
+                }
+
+                // 描述
+                if (DOM.detDesc) DOM.detDesc.innerText = data.desc || '';
+
+                // 图片画廊
+                if (DOM.detImages) {
+                    DOM.detImages.innerHTML = data.images.map(img => `
+                        <div class="gallery-item">
+                            <img src="${Utils.getImageUrl(img.url)}" alt="${img.name || data.en}" loading="lazy" onerror="this.src='${CONFIG.IMAGES.FALLBACK}';">
+                            <div class="gallery-caption">${img.name || ''}</div>
+                        </div>
+                    `).join('');
+                }
+
+                // 页脚浏览量
+                if (DOM.viewCountIndicator) {
+                    DOM.viewCountIndicator.innerText = `VIEWS: ${data.views} / PROJECT ${projectIndex+1}`;
+                }
+
+                // 更新页面标题
+                document.title = `VISION ARCHIVE · ${data.zh}`;
             }
-        }
 
-        function renderDetail(idx) {
-            const data = collections[idx];
-            if(!data) return;
-            document.getElementById('det-zh').innerText = data.zh;
-            const metaBar = document.querySelector('#detail-page .meta-bar');
-            metaBar.innerHTML = `
-                <div class="meta-item"><span class="meta-label">Category / 类别</span><span class="meta-value">${data.cat}</span></div>
-                <div class="meta-item"><span class="meta-label">Location / 地点</span><span class="meta-value">${data.loc}</span></div>
-                <div class="meta-item"><span class="meta-label">Year / 年份</span><span class="meta-value">${data.yr}</span></div>
-                <div class="meta-item"><span class="meta-label">Role / 角色</span><span class="meta-value">${data.role}</span></div>
-            `;
-            document.getElementById('det-desc').innerText = data.desc || "";
-            document.getElementById('det-images').innerHTML = data.images.map(img => `
-                <div class="gallery-item"><img src="images/${img.url}"><div class="gallery-caption">${img.name || ""}</div></div>
-            `).join('');
-        }
-
-        window.addEventListener('wheel', (e) => {
-            if (document.body.classList.contains('lock-scroll')) {
-                const grid = document.getElementById('collections-grid-target');
-                if (e.deltaY !== 0) { e.preventDefault(); grid.scrollLeft += e.deltaY; }
+            // 修改导航栏可见性：仅在 works 和 secondary 视图显示，第四页隐藏
+            function updateNavbarVisibility() {
+                if (currentView === 'works' || currentView === 'secondary') {
+                    DOM.navbar.classList.add('visible');
+                } else {
+                    DOM.navbar.classList.remove('visible');
+                }
             }
-        }, { passive: false });
 
-        window.addEventListener('hashchange', handleRoute);
-        window.addEventListener('load', () => {
-            handleRoute();
-            initImageLoop(); // 初始化自动循环播放
-        });
+            function hideFixedPages() {
+                DOM.welcomePage.style.transform = 'translateY(-100%)';
+                DOM.imagePage.style.transform = 'translateY(100%)';
+                DOM.worksPage.style.transform = 'translateY(100%)';
+                DOM.fourthPage.style.transform = 'translateY(100%)';
+            }
+
+            // 时钟显示/隐藏辅助函数
+            function showClock() {
+                if (DOM.clockDiv) {
+                    DOM.clockDiv.style.display = 'block';
+                }
+            }
+            function hideClock() {
+                if (DOM.clockDiv) {
+                    DOM.clockDiv.style.display = 'none';
+                }
+            }
+            function removeImagePageClockClass() {
+                if (DOM.clockDiv) {
+                    DOM.clockDiv.classList.remove('image-page-clock');
+                }
+            }
+
+            function goToWelcome() {
+                if (isScrolling || currentView === 'welcome') return;
+                isScrolling = true;
+                currentView = 'welcome';
+                document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active-view'));
+                DOM.welcomePage.style.transform = 'translateY(0)';
+                DOM.imagePage.style.transform = 'translateY(100%)';
+                DOM.worksPage.style.transform = 'translateY(100%)';
+                DOM.fourthPage.style.transform = 'translateY(100%)';
+                updateNavbarVisibility();
+                resetStaxCardsAnimation();
+                hideClock();
+                removeImagePageClockClass();
+                if (DOM.backToTopCollections) DOM.backToTopCollections.classList.remove('visible');
+                setTimeout(() => { isScrolling = false; }, 800);
+            }
+
+            function goToImage() {
+                if (isScrolling || currentView === 'image') return;
+                isScrolling = true;
+                currentView = 'image';
+                document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active-view'));
+                DOM.welcomePage.style.transform = 'translateY(-100%)';
+                DOM.imagePage.style.transform = 'translateY(0)';
+                DOM.worksPage.style.transform = 'translateY(100%)';
+                DOM.fourthPage.style.transform = 'translateY(100%)';
+                updateNavbarVisibility();
+
+                if (DOM.clockDiv) {
+                    DOM.clockDiv.classList.add('image-page-clock');
+                }
+
+                if (DOM.backToTopCollections) DOM.backToTopCollections.classList.remove('visible');
+
+                // 重置第二页入场动画
+                const imagePage = DOM.imagePage;
+                const leftText = imagePage.querySelector('header [class*="text-\\[10px\\]"].uppercase');
+                if (leftText) {
+                    leftText.style.animation = 'none';
+                    void leftText.offsetHeight;
+                    leftText.style.animation = 'elementPop 0.5s var(--spring-easing) forwards 0.6s';
+                }
+                const heroTitle = imagePage.querySelector('.hero-title');
+                if (heroTitle) {
+                    heroTitle.style.animation = 'none';
+                    void heroTitle.offsetHeight;
+                    heroTitle.style.animation = 'kuyaSpring 0.8s var(--spring-easing) forwards';
+                }
+                const descDiv = imagePage.querySelector('.lab-title-container .mt-4.max-w-xl');
+                if (descDiv) {
+                    descDiv.style.animation = 'none';
+                    void descDiv.offsetHeight;
+                    descDiv.style.animation = 'elementPop 0.5s var(--spring-easing) 0.2s forwards';
+                }
+                const featuredTitle = imagePage.querySelector('footer [class*="text-\\[10px\\]"].font-black');
+                if (featuredTitle) {
+                    featuredTitle.style.animation = 'none';
+                    void featuredTitle.offsetHeight;
+                    featuredTitle.style.animation = 'elementPop 0.4s var(--spring-easing) forwards 0.35s';
+                }
+                const listItems = imagePage.querySelectorAll('.list-item');
+                listItems.forEach((item, index) => {
+                    const delay = index === 0 ? '0.4s' : '0.45s';
+                    item.style.animation = 'none';
+                    void item.offsetHeight;
+                    item.style.animation = `elementPop 0.4s var(--spring-easing) both ${delay}`;
+                });
+                const rightText = imagePage.querySelector('footer .text-right.ml-10');
+                if (rightText) {
+                    rightText.style.animation = 'none';
+                    void rightText.offsetHeight;
+                    rightText.style.animation = 'elementPop 0.6s var(--spring-easing) forwards 0.55s';
+                }
+                const footerLine = imagePage.querySelector('.footer-line');
+                if (footerLine) {
+                    footerLine.style.animation = 'none';
+                    void footerLine.offsetHeight;
+                    footerLine.style.animation = 'lineQuick 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both';
+                }
+
+                setTimeout(() => { isScrolling = false; }, 800);
+            }
+
+            function goToWorks() {
+                if (isScrolling || currentView === 'works') return;
+                isScrolling = true;
+                currentView = 'works';
+                document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active-view'));
+                DOM.welcomePage.style.transform = 'translateY(-100%)';
+                DOM.imagePage.style.transform = 'translateY(-100%)';
+                DOM.worksPage.style.transform = 'translateY(0)';
+                DOM.fourthPage.style.transform = 'translateY(100%)';
+                updateNavbarVisibility();
+
+                showClock();
+                removeImagePageClockClass();
+                if (DOM.backToTopCollections) DOM.backToTopCollections.classList.remove('visible');
+
+                // 进入作品页时启动轮播
+                startCarousel();
+
+                setTimeout(() => { isScrolling = false; }, 800);
+            }
+
+            function activateBreathing() {
+                // 为第四页“联系请点击”添加呼吸灯效果，已在HTML中通过类实现，此处无需操作
+            }
+
+            function goToFourth() {
+                if (isScrolling || currentView === 'fourth') return;
+                isScrolling = true;
+                currentView = 'fourth';
+                document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active-view'));
+                DOM.welcomePage.style.transform = 'translateY(-100%)';
+                DOM.imagePage.style.transform = 'translateY(-100%)';
+                DOM.worksPage.style.transform = 'translateY(-100%)';
+                DOM.fourthPage.style.transform = 'translateY(0)';
+                updateNavbarVisibility();
+
+                hideClock();
+                removeImagePageClockClass();
+
+                if (DOM.backToTopCollections) DOM.backToTopCollections.classList.remove('visible');
+
+                setTimeout(() => { isScrolling = false; }, 800);
+            }
+
+            function enterSecondaryView() {
+                currentView = 'secondary';
+                hideFixedPages();
+                updateNavbarVisibility();
+                hideClock();
+                removeImagePageClockClass();
+                if (DOM.backToTopCollections) DOM.backToTopCollections.classList.remove('visible');
+            }
+
+            function handleWheel(e) {
+                if (isScrolling || isPanelOpen || currentView === 'secondary') return;
+                const delta = e.deltaY;
+                const worksPage = DOM.worksPage;
+
+                if (currentView === 'works') {
+                    const wrapper = DOM.detailsWrapper;
+                    if (wrapper) {
+                        const { scrollTop, scrollHeight, clientHeight } = wrapper;
+                        if (delta < 0 && scrollTop <= 0) {
+                            e.preventDefault();
+                            goToImage();
+                        } else if (delta > 0 && scrollTop + clientHeight >= scrollHeight - 5) {
+                            e.preventDefault();
+                            goToFourth();
+                        }
+                    } else {
+                        if (delta < 0) goToImage();
+                        else if (delta > 0) goToFourth();
+                    }
+                } else if (currentView === 'fourth') {
+                    if (delta < 0) {
+                        e.preventDefault();
+                        goToWorks();
+                    }
+                } else if (currentView === 'image') {
+                    if (delta > 0) {
+                        goToWorks();
+                    } else if (delta < 0) {
+                        goToWelcome();
+                    }
+                } else if (currentView === 'welcome') {
+                    if (delta > 0) {
+                        goToImage();
+                    }
+                }
+            }
+
+            function handleRoute() {
+                const hash = window.location.hash;
+                document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active-view'));
+                DOM.navLinks.forEach(l => l.classList.remove('active'));
+
+                if (hash === '' || hash === '#home') {
+                    goToWelcome();
+                    document.querySelector('[data-nav="home"]')?.classList.add('active');
+                    stopCarousel();
+                } else if (hash === '#collections') {
+                    renderCollectionsGrid();
+                    document.getElementById('collections-page').classList.add('active-view');
+                    document.querySelector('[data-nav="collections"]')?.classList.add('active');
+                    DOM.body.classList.add('lock-scroll');
+                    stopCarousel();
+                    enterSecondaryView();
+                    if (DOM.backToTopCollections) DOM.backToTopCollections.classList.add('visible');
+                } else if (hash.startsWith('#project-')) {
+                    const idx = parseInt(hash.split('-')[1]);
+                    // 记录来源：如果合集页当前处于激活状态，则为从合集页进入，否则视为从作品页进入
+                    if (DOM.collectionsPage && DOM.collectionsPage.classList.contains('active-view')) {
+                        detailEntrySource = 'collections';
+                    } else {
+                        detailEntrySource = 'works'; // 默认从作品页进入
+                    }
+                    // 激活详情页视图
+                    document.getElementById('detail-page').classList.add('active-view');
+                    DOM.body.classList.remove('lock-scroll');
+                    window.scrollTo(0, 0);
+                    stopCarousel();
+                    enterSecondaryView();
+                    // 渲染详情页
+                    renderDetailPage(idx);
+                } else if (hash === '#about') {
+                    goToFourth();
+                } else if (hash === '#contact') {
+                    goToFourth();
+                } else if (hash === '#fourth') {
+                    goToFourth();
+                } else {
+                    window.location.hash = '#home';
+                }
+            }
+
+            // 详情页返回逻辑
+            window.handleDetailBack = function() {
+                if (detailEntrySource === 'collections') {
+                    // 从合集页进入：返回上一页（history.back）
+                    history.back();
+                } else {
+                    // 从作品页进入：跳转到合集页
+                    window.location.hash = '#collections';
+                }
+            };
+
+            function initWorksPageInteractions() {
+                if (!DOM.detailsWrapper || !DOM.projectItems) return;
+
+                DOM.projectItems.forEach((item) => {
+                    item.addEventListener('click', () => {
+                        const index = item.getAttribute('data-index');
+                        const action = item.getAttribute('data-action');
+                        if (index !== null && DOM.detailsSlides[index]) {
+                            DOM.detailsSlides[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                        if (action === 'show-toast' && !isToastShowing) {
+                            showToast();
+                        }
+                    });
+                });
+
+                DOM.detailsWrapper.addEventListener('scroll', () => {
+                    const index = Math.round(DOM.detailsWrapper.scrollTop / DOM.detailsWrapper.clientHeight);
+                    DOM.projectItems.forEach((item, i) => {
+                        if (i === index) item.classList.add('active');
+                        else item.classList.remove('active');
+                    });
+                });
+
+                DOM.detailsSlides.forEach((slide) => {
+                    slide.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const index = slide.getAttribute('data-index');
+                        if (index !== null) {
+                            window.location.hash = `#project-${index}`;
+                        }
+                    });
+                });
+
+                if (DOM.moreCollections) {
+                    DOM.moreCollections.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        window.location.hash = '#collections';
+                    });
+                }
+            }
+
+            function showToast() {
+                isToastShowing = true;
+                DOM.toast.classList.add('show');
+                DOM.overlay.classList.add('active');
+                setTimeout(() => {
+                    DOM.toast.classList.remove('show');
+                    DOM.overlay.classList.remove('active');
+                    setTimeout(() => isToastShowing = false, 500);
+                }, 1200);
+            }
+
+            function updateClock() {
+                const options = { timeZone: 'Asia/Shanghai', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+                const formatter = new Intl.DateTimeFormat('zh-CN', options);
+                if (DOM.clockElement) DOM.clockElement.innerText = formatter.format(new Date());
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            function initStaxCards() {
+                DOM.staxCards?.addEventListener('click', (e) => {
+                    const card = e.target.closest('.stax-card');
+                    if (!card) return;
+
+                    if (card.classList.contains('is-future')) {
+                        card.classList.add('shake');
+                        setTimeout(() => card.classList.remove('shake'), 450);
+                        return;
+                    }
+
+                    if (card.dataset.action === 'works') {
+                        goToWorks();
+                        return;
+                    }
+                    if (card.dataset.action === 'contact') {
+                        window.location.hash = '#fourth';
+                        return;
+                    }
+
+                    if (card.dataset.route) {
+                        window.location.hash = card.dataset.route;
+                        return;
+                    }
+
+                    DOM.staxPanelTitle.textContent = card.dataset.title || '';
+                    DOM.staxPanelDate.textContent = card.dataset.date || '';
+                    DOM.staxPanelDesc.textContent = card.dataset.desc || '';
+                    if (card.dataset.img) {
+                        Utils.preloadImage(card.dataset.img)
+                            .then(() => { 
+                                DOM.staxPanelImg.src = card.dataset.img; 
+                                DOM.staxPanelImg.classList.remove('error'); 
+                            })
+                            .catch(() => Utils.handleImageError(DOM.staxPanelImg));
+                        DOM.staxPanelImg.style.display = '';
+                    } else {
+                        DOM.staxPanelImg.style.display = 'none';
+                    }
+                    DOM.staxPanelLinks.innerHTML = '';
+                    if (card.dataset.links) {
+                        card.dataset.links.split(',').forEach(item => {
+                            const [name, url] = item.split('|');
+                            const link = document.createElement('a');
+                            link.href = url; link.target = '_blank'; link.className = 'action-link'; link.textContent = name;
+                            DOM.staxPanelLinks.appendChild(link);
+                        });
+                    }
+                    DOM.staxPanel.classList.add('active');
+                    DOM.staxOverlay.classList.add('active');
+                    isPanelOpen = true;
+                });
+
+                [DOM.staxClose, DOM.staxOverlay].forEach(el => el?.addEventListener('click', () => {
+                    DOM.staxPanel.classList.remove('active');
+                    DOM.staxOverlay.classList.remove('active');
+                    isPanelOpen = false;
+                }));
+
+                DOM.contactHeader?.addEventListener('click', () => {
+                    const cnnCard = document.querySelector('.stax-card.cnn');
+                    if (cnnCard) cnnCard.click();
+                });
+            }
+
+            // 轮播定时器
+            let carouselInterval = null;
+
+            // 启动轮播
+            function startCarousel() {
+                if (carouselInterval) return;
+                carouselInterval = setInterval(() => {
+                    const carousels = document.querySelectorAll('.carousel-img');
+                    carousels.forEach(img => {
+                        const projIndex = img.getAttribute('data-proj');
+                        const current = parseInt(img.getAttribute('data-current'));
+                        const project = collections[projIndex];
+                        if (project && project.images.length > 1) {
+                            const next = (current + 1) % project.images.length;
+                            const nextSrc = Utils.getImageUrl(project.images[next].url);
+                            // 预加载下一张
+                            Utils.preloadImage(nextSrc).catch(() => {});
+                            img.style.opacity = '0.8';
+                            setTimeout(() => {
+                                img.src = nextSrc;
+                                img.setAttribute('data-current', next);
+                                img.style.opacity = '1';
+                            }, 150);
+                        }
+                    });
+                }, 3000); // 每3秒切换一次
+            }
+
+            // 停止轮播
+            function stopCarousel() {
+                if (carouselInterval) {
+                    clearInterval(carouselInterval);
+                    carouselInterval = null;
+                }
+            }
+
+            function initHorizontalScroll() {}
+
+            function initNavLinks() {
+                DOM.navLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        userNavigation = true; // 标记为用户主动点击
+                        const href = link.getAttribute('data-nav');
+                        if (href === 'home') window.location.hash = '#home';
+                        else if (href === 'collections') window.location.hash = '#collections';
+                        else if (href === 'about' || href === 'contact') {
+                            window.location.hash = '#fourth';
+                        }
+                        // 短暂延迟后重置标志，避免影响后续操作
+                        setTimeout(() => { userNavigation = false; }, 500);
+                    });
+                });
+                DOM.logo.addEventListener('click', () => {
+                    userNavigation = true;
+                    window.location.hash = '#home';
+                    setTimeout(() => { userNavigation = false; }, 500);
+                });
+            }
+
+            function initBackToTop() {
+                if (DOM.backToTopBtn) {
+                    DOM.backToTopBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        window.location.hash = '#home';
+                    });
+                }
+                if (DOM.backToTopCollections) {
+                    DOM.backToTopCollections.addEventListener('click', () => {
+                        const grid = DOM.collectionsGridTarget;
+                        if (grid) {
+                            grid.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                    });
+                }
+            }
+
+            // 为详情页键盘左右切换（仅在详情页激活时）
+            function initDetailPageEnhancements() {
+                window.addEventListener('keydown', (e) => {
+                    if (!document.getElementById('detail-page').classList.contains('active-view')) return;
+                    const hash = window.location.hash;
+                    if (!hash.startsWith('#project-')) return;
+                    let currentIdx = parseInt(hash.split('-')[1]);
+                    if (isNaN(currentIdx)) return;
+                    if (e.key === 'ArrowLeft') {
+                        const prevIdx = (currentIdx - 1 + collections.length) % collections.length;
+                        window.location.hash = `#project-${prevIdx}`;
+                    } else if (e.key === 'ArrowRight') {
+                        const nextIdx = (currentIdx + 1) % collections.length;
+                        window.location.hash = `#project-${nextIdx}`;
+                    }
+                });
+            }
+
+            function init() {
+                hideClock();
+                resetStaxCardsAnimation();
+                renderWorksPage();
+                initStaxCards();
+                initNavLinks();
+                initHorizontalScroll();
+                initWorksPageInteractions();
+                initBackToTop();
+                initDetailPageEnhancements();
+                // 已移除 initContactPopup 调用
+                goToWelcome();
+                window.addEventListener('wheel', handleWheel, { passive: false });
+                window.addEventListener('hashchange', handleRoute);
+                handleRoute();
+            }
+
+            init();
+        })();
     </script>
 </body>
 </html>
