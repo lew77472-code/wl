@@ -3,7 +3,7 @@
 <html lang="zh-CN" data-version="01">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>01 · VISION ARCHIVE · 交互作品集</title>
     <!-- Tailwind CSS (用于新图片页) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1101,10 +1101,11 @@
 
         /* ========== 手机端适配 (屏幕宽度小于等于 768px) ========== */
         @media (max-width: 768px) {
-            /* 固定页面改为可滚动，启用触摸滚动 */
+            /* 固定页面改为可滚动，启用触摸滚动，并添加底部安全区 */
             .fixed-page {
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
+                padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
             }
 
             /* 欢迎页卡片水平滚动 */
