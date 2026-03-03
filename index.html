@@ -1,9 +1,10 @@
+<!-- 01 -->
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-version="01">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VISION ARCHIVE · 交互作品集</title>
+    <title>01 · VISION ARCHIVE · 交互作品集</title>
     <!-- Tailwind CSS (用于新图片页) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 添加 03 所需的 Google Fonts -->
@@ -866,17 +867,21 @@
             width: 320px;
             height: 320px;
         }
-        /* 悬浮效果：背景变黑，文字变白，切换标题为英文 */
+        /* 悬浮效果：背景变黑，文字变白，切换标题及元数据为英文 */
         .grid-item:hover {
             background-color: #000 !important;
             color: #fff;
             transform: translateY(-4px);
         }
-        .grid-item:hover .title-zh {
+        .grid-item:hover .title-zh,
+        .grid-item:hover .metadata .zh {
             display: none;
         }
-        .grid-item:hover .title-en {
-            display: block;
+        .grid-item:hover .title-en,
+        .grid-item:hover .metadata .en {
+            display: block !important;
+            color: #fff !important;
+            text-transform: lowercase;
         }
         .grid-item .title {
             font-size: 1.5rem;
@@ -892,8 +897,14 @@
             text-transform: uppercase;
             color: inherit; /* 继承父级颜色 */
         }
-        .grid-item .metadata div {
+        .grid-item .metadata .zh,
+        .grid-item .metadata .en {
             margin-bottom: 4px;
+        }
+        .grid-item .metadata .en {
+            display: none;
+        }
+        .grid-item .metadata div {
             font-weight: 400;
             opacity: 0.8;
         }
@@ -902,6 +913,13 @@
             font-size: 1rem;
             display: block;
             margin-bottom: 8px;
+        }
+        /* 占位卡片元数据（无英文切换，保持简单） */
+        .grid-item.placeholder .metadata .zh {
+            display: block;
+        }
+        .grid-item.placeholder .metadata .en {
+            display: none;
         }
 
         /* 回到顶部按钮 */
@@ -998,11 +1016,37 @@
             font-size: 1rem;
             line-height: 1.8;
             color: #555;
+            margin-bottom: 30px;
+            max-width: 700px;
+        }
+        .detail-description-en {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #666;
+            font-style: italic;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            max-width: 700px;
+        }
+        .detail-description-extra {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            max-width: 700px;
+        }
+        .detail-description-extra-en {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #666;
+            font-style: italic;
+            margin-top: 20px;
             margin-bottom: 60px;
             max-width: 700px;
         }
         .gallery-item {
-            margin-bottom: 60px;
+            margin-bottom: 40px;
         }
         .gallery-item img {
             width: 65%;
@@ -1054,6 +1098,189 @@
         .image-placeholder {
             overflow: hidden;
         }
+
+        /* ========== 手机端适配 (屏幕宽度小于等于 768px) ========== */
+        @media (max-width: 768px) {
+            /* 固定页面改为可滚动，启用触摸滚动 */
+            .fixed-page {
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* 欢迎页卡片垂直排列 */
+            .stax-cards {
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+                width: 100%;
+            }
+            .stax-card {
+                margin-left: 0;
+                margin-bottom: 20px;
+                width: 90%;
+                max-width: 300px;
+                transform: none !important;
+            }
+            .stax-card:hover {
+                transform: translateY(-10px) !important;
+            }
+            .stax-header h1 {
+                font-size: 2.5rem;
+            }
+
+            /* 图片页 (LAB Studio) 调整 */
+            #image-page .lab-title-container {
+                margin-top: 20px;
+            }
+            #image-page .hero-title {
+                font-size: 15vw;
+            }
+            #image-page .folder-list-container {
+                width: 100%;
+            }
+            #image-page .list-item {
+                font-size: 16px;
+                flex-wrap: wrap;
+            }
+            #image-page .footer-line {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            #image-page .footer-line .text-right {
+                margin-left: 0;
+                margin-top: 20px;
+                text-align: left;
+            }
+
+            /* 作品页 (第三页) 单列布局 */
+            #works-page main {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                margin-top: 20px;
+            }
+            .project-list {
+                margin-left: 0;
+                padding: 0 20px;
+            }
+            .project-item {
+                font-size: 20px;
+            }
+            .fixed-pro {
+                display: none;
+            }
+            .details-wrapper {
+                height: auto;
+                max-height: 60vh;
+            }
+            .details-slide {
+                height: auto;
+                min-height: 400px;
+            }
+            .details-header {
+                margin-top: 20px;
+                font-size: 16px;
+            }
+            .image-placeholder {
+                height: 30vh;
+            }
+
+            /* 第四页 (关于/联系) 调整 */
+            #fourth-page .recruitment-page {
+                padding: 20px;
+            }
+            #fourth-page .recruitment-page main {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            #fourth-page .recruitment-page .title-row {
+                font-size: 12vw;
+            }
+            #fourth-page .recruitment-page .title-and {
+                font-size: 3vw;
+            }
+            .side-label {
+                display: none;
+            }
+
+            /* 合集页网格卡片每行两列 */
+            .collections-view-container {
+                padding-top: 60px;
+            }
+            .grid-layout {
+                padding: 0 20px 20px;
+                justify-content: center;
+            }
+            .grid-item {
+                width: calc(50% - 20px) !important;
+                height: auto !important;
+                aspect-ratio: 1 / 1;
+                margin-right: 10px !important;
+                margin-left: 10px !important;
+                margin-bottom: 20px;
+            }
+            .grid-item.wide,
+            .grid-item.tall,
+            .grid-item.square {
+                width: calc(50% - 20px) !important;
+                height: auto !important;
+                aspect-ratio: 1 / 1;
+            }
+            .grid-item .title {
+                font-size: 1.2rem;
+            }
+            .grid-item .metadata {
+                font-size: 0.8rem;
+            }
+
+            /* 详情页调整 */
+            .detail-wrapper {
+                padding: 0 20px 40px;
+            }
+            #det-zh {
+                font-size: 2rem;
+            }
+            .meta-bar {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .gallery-item img {
+                width: 100%;
+            }
+
+            /* 导航栏调整 */
+            .navbar {
+                padding: 10px var(--desktop-padding);
+            }
+            .nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .nav-links {
+                margin-right: 0;
+                flex-wrap: wrap;
+                gap: 15px;
+                margin-top: 10px;
+            }
+            .logo {
+                margin-left: 0;
+            }
+
+            /* 时钟位置 */
+            .clock {
+                top: 10px;
+                right: 10px;
+                font-size: 14px;
+            }
+
+            /* 回到顶部按钮 */
+            #back-to-top-collections {
+                width: 40px;
+                height: 40px;
+                bottom: 20px;
+                right: 20px;
+                font-size: 20px;
+            }
+        }
     </style>
 </head>
 <body id="page-body">
@@ -1101,7 +1328,7 @@
             </div>
         </header>
         <div class="stax-cards" id="staxCards">
-            <div class="stax-card stax" data-title="OhMyKing's Space" data-date="2025" data-desc="Interactive Space." data-img="">HOME<span class="card-zh">首页</span><div class="watermark">ST<br>AX</div></div>
+            <div class="stax-card stax" data-title="当前处于首页" data-date="2026" data-desc="作品请查看合集" data-img="">HOME<span class="card-zh">首页</span><div class="watermark">ST<br>AX</div></div>
             <div class="stax-card stax-dark" data-title="AI Archive" data-date="2025" data-desc="Digital Works." data-img="" data-action="works">WORK<span class="card-zh">作品</span><div class="watermark">AI</div></div>
             <div class="stax-card truffle" data-title="About Me" data-date="2026" data-desc="Designer." data-img="" data-route="#about">ABOUT<span class="card-zh">关于</span><div class="watermark">TR<br>FL</div></div>
             <div class="stax-card cnn" data-title="Get In Touch" data-date="Available Now" data-desc="选择以下方式与我取得联系，我通常会在 24 小时内回复。" data-img="https://images.unsplash.com/photo-1534536281715-e28d76689b4d?auto=format&fit=crop&w=600&q=80" data-links="发送邮件|mailto:yourname@example.com,微信联系|#,GitHub 个人主页|https://github.com/yourusername" data-action="contact">CONTACT<span class="card-zh">联系方式</span><div class="watermark">CNN</div></div>
@@ -1387,42 +1614,138 @@
                 backToTopCollections: document.getElementById('back-to-top-collections') // 合集页回到顶部按钮
             };
 
-            // 七个项目数据 (扩充至7个)
+            // 七个项目数据 (扩充至7个，增加英文类别和地点，并添加英文描述及额外段落)
             const collections = [
                 { 
-                    zh: "JINKYHUANG × 孙悟空 × 阿童木", en: "THE MONKEY KING x ASTRO BOY", cat: "IP潮玩", loc: "中国上海", yr: "2025.10", role: "Photographer", views: "42,100",
-                    desc: "在土耳其的荒原中，建筑与自然形成了一种无声的张力。",
-                    images: [ { url: "1.jpg", name: "The Silence" }, { url: "2.jpg", name: "The Void" }, { url: "3.jpg", name: "The Horizon" } ] 
+                    zh: "JINKYHUANG × 孙悟空 × 阿童木", en: "THE MONKEY KING x ASTRO BOY", 
+                    cat: "IP潮玩", enCat: "IP Toy",
+                    loc: "中国上海", enLoc: "Shanghai, China",
+                    yr: "2025.10", role: "策展设计/活动执行", views: "42,100",
+                    desc: "用十万马力去七十二变是一次知名中外IP联动展，位于上海BFC外滩金融中心B2、3F和五层露台处。此次展览是中日经典动画形象首次“同框”，也是对两国经典文化符号的创新诠释。",
+                    descEn: "The 'One Hundred Thousand Horsepower for Seventy-Two Transformations' exhibition is a well-known collaborative event featuring both domestic and international IPs, located at B2, 3rd floor, and the fifth-floor terrace of Shanghai BFC Bund Financial Center. This exhibition marks the first time that classic Chinese and Japanese animated characters appear together in the same frame.",
+                    descExtra: "其整体设计延续了JINKY HUANG黄小眠的「 可持续艺术 」，以裸漏蛋壳板+颗粒板材料，结合苏绣、铸铁、软木、石材等材料打造的装置，组成多元化空间。",
+                    descEnExtra: "Using exposed eggshell panels and particle board materials, combined with Su embroidery, cast iron, cork, stone, and other materials to create an installation, forming a diversified space.",
+                    images: [ 
+                             { url: "1.jpg", name: "户外联动DP" }, 
+                             { url: "2.jpg", name: "3F展品“齐天大圣”" }, 
+                             { url: "3.jpg", name: "5F露台主装置" } ],
+                    imagesBottom: [ 
+                             { url: "5.jpg", name: "非遗木雕" }, 
+                             { url: "6.jpg", name: "衍生品预热" }, 
+                             { url: "7.jpg", name: "阳光板+软木" }, 
+                             { url: "8.jpg", name: "非遗苏绣+石雕" } ] // 示例底部图片
                 },
                 { 
-                    zh: "JINKYHUANG x 三丽鸥HELLO KITTY", en: "JINKYHUANG x HELLO KITTY", cat: "潮玩IP", loc: "中国苏州", yr: "2025.08", role: "Photographer", views: "38,500",
-                    desc: "建筑与时间的无声对话。上海的街道在晨昏交替之际。",
-                    images: [ { url: "3.jpg", name: "Motion Ecosystem" }, { url: "4.jpg", name: "Flow" }, { url: "5.jpg", name: "Structure" } ] 
+                    zh: "JINKYHUANG x 三丽鸥HELLO KITTY", en: "JINKYHUANG x HELLO KITTY", 
+                    cat: "潮玩IP", enCat: "IP Toy",
+                    loc: "中国苏州", enLoc: "Suzhou, China",
+                    yr: "2025.08", role: "策展设计/活动执行", views: "38,500",
+                    desc: "三丽鸥HELLO KITTY展「游园径柘」通过非物质文化遗产昆曲《牡丹亭》为创意脉络，在空间中融入园林曲径概念，在苏式园林的诗意框架内提供艺术展览、文化交流等多样化功能。",
+                    descEn: "The Sanrio HELLO KITTY Exhibition 'Youyuan Jingzhe' uses the intangible cultural heritage Kunqu Opera 'The Peony Pavilion' as its creative thread, providing a variety of functions such as art exhibitions and cultural exchanges within the poetic framework of Su-style gardens.",
+                    descExtra: "以天然软木、超薄石材、3D打印、回收建材、金属等可持续环保介质为笔，中国国家级非物质文化遗产苏绣、缂丝、金砖、石雕、木雕、砖雕等非遗结合先锋工艺为墨",
+                    descEnExtra: "Using sustainable and environmentally friendly materials such as natural cork, ultra-thin stone, 3D printing, recycled building materials, and metal as the pen, and combining China's national intangible cultural heritage crafts such as Su embroidery, kesi weaving, gold brick work, stone carving, wood carving, and brick carving with avant-garde techniques as the ink.",
+                    images: [ 
+                             { url: "10.jpg", name: "5米软木KITTY" }, 
+                             { url: "11.jpg", name: "软木颗粒logo" }, 
+                             { url: "9.jpg", name: "2F窗棂空间" }, 
+                             { url: "14.jpg", name: "超薄石材灯" }, 
+                             { url: "12.jpg", name: "非遗苏绣+3D打印" } ],
+                    imagesBottom: [ 
+                             { url: "15.jpg", name: "软木KITTY衍生品" },
+                             { url: "16.jpg", name: "放落过程" },
+                             { url: "13.jpg", name: "场地升降立门" },]
                 },
                 { 
-                    zh: "Mutina 意大利瓷砖北京展厅", en: "Mutina Beijing Exhibition Hall", cat: "商业品牌", loc: "中国北京", yr: "2025.06", role: "Photographer", views: "29,400",
-                    desc: "回归纯粹的几何。这组作品剥离了所有的繁杂。",
-                    images: [ { url: "5.jpg", name: "Next 2022" }, { url: "6.jpg", name: "Cube" }, { url: "1.jpg", name: "Balance" } ] 
+                    zh: "Mutina 意大利瓷砖北京展厅", en: "Mutina Beijing Exhibition Hall", 
+                    cat: "商业品牌", enCat: "Commercial Brand",
+                    loc: "中国北京", enLoc: "Beijing, China",
+                    yr: "2025.06", role: "空间设计", views: "29,400",
+                    desc: "意大利先锋陶瓷品牌Mutina 以材质为媒介、以展览为形式，展开一场“陶瓷如何成为思维方式”的探索。",
+                    descEn: "The Italian avant-garde ceramic brand Mutina uses material as a medium and exhibitions as a form to carry out an exploration of 'how ceramics can become a way of thinking.'",
+                    descExtra: "项目取代传统陶瓷销售展示，通过艺术策展的形式铺陈作品，利用空间自然的特点，巧妙结合产品，使其成为空间的一部分。",
+                    descEnExtra: "The project replaces traditional ceramic sales displays by presenting works through artistic curation, utilizing the natural characteristics of the space and ingeniously integrating the products, making them part of the environment.",
+                    images: [ 
+                             { url: "17.jpg", name: "JALI隔断" }, 
+                             { url: "18.jpg", name: "Jali_nero系列" }, 
+                             { url: "20.jpg", name: "Adagio_blu编织" }, 
+                             { url: "19.jpg", name: "空间1" },
+                             { url: "24.jpg", name: "空间2" },
+                             { url: "22.jpg", name: "Patricia Urquiola" },],
+                    imagesBottom: [ 
+                             { url: "25.jpg", name: "产品展示" },
+                             { url: "23.jpg", name: "空间3" },
+                             { url: "26.jpg", name: "Renga_Gerhardt_Kellermann" },
+                             { url: "21.jpg", name: "空间4" },]
                 },
                 { 
-                    zh: "Eastcom Park", en: "Eastcom Park", cat: "Commercial Brand", loc: "Hangzhou China", yr: "2023.11", role: "Photographer", views: "31,200",
-                    desc: "捕捉东京夜晚的流动与光影。",
-                    images: [ { url: "2.jpg", name: "Neon Lights" }, { url: "3.jpg", name: "Street Flow" }, { url: "4.jpg", name: "Night Pulse" } ] 
+                    zh: "骆家庄农贸市场", en: "Luojiazhuang Agricultural Products Market", 
+                    cat: "标识设计", enCat: "Signage Design",
+                    loc: "中国杭州", enLoc: "Hangzhou, China",
+                    yr: "2024.12", role: "标识深化", views: "31,200",
+                    desc: "骆家庄农贸市场位于杭州市西湖区，项目设计延续在地文化，将大家熟悉的编织袋纹路转化为设计肌理，鱼、菜、肉等文字将空间标记划分，在视觉上摒弃多余的装饰语言。",
+                    descEn: "Luojiazhuang Agricultural Trade Market is located in Xihu District, Hangzhou. The project design continues the local culture, transforming the familiar woven bag patterns into design textures. Words such as 'fish,' 'vegetables,' and 'meat' are used to demarcate spaces, visually eliminating unnecessary decorative elements.",
+                    descExtra: "以简洁符号回应购物空间的本质诉求。",
+                    descEnExtra: "Respond to the essential demands of the shopping space with concise symbols.",
+                    images: [ 
+                             { url: "27.jpg", name: "立面主logo" }, 
+                             { url: "28.jpg", name: "施工细节" }, 
+                             { url: "29.jpg", name: "宣传海报" } ],
+                    imagesBottom: [
+                             { url: "30.jpg", name: "视觉元素" },
+                             { url: "31.jpg", name: "视觉元素" },]
                 },
                 { 
-                    zh: "木棉空间", en: "Kapok Space", cat: "商业品牌", loc: "中国上海", yr: "2025.03", role: "Photographer", views: "27,800",
-                    desc: "挪威峡湾的静谧与壮阔。",
-                    images: [ { url: "1.jpg", name: "Fjord Dawn" }, { url: "5.jpg", name: "Mountain Mist" }, { url: "6.jpg", name: "Arctic Light" } ] 
+                    zh: "木棉空间", en: "Kapok Space", 
+                    cat: "商业品牌", enCat: "Commercial Brand",
+                    loc: "中国上海", enLoc: "Shanghai, China",
+                    yr: "2025.03", role: "空间设计/活动执行", views: "27,800",
+                    desc: "木棉展会空间以传统木构为空间架构，通过与纺织布料结合，自然的表现出那种朦胧的留白光感，强调空间的开放性与适应性。空间内部以平面符号、旧木材质，以及隔断出的干净方白空间，来延续空间的建筑材料语言。",
+                    descEn: "The kapok exhibition space uses traditional wooden structures as its spatial framework. By integrating textile fabrics, it naturally conveys a sense of hazy, vacant light, emphasizing the openness and adaptability of the space. Inside the space, flat symbols, aged wood materials, and clean, partitioned white spaces are employed to continue the architectural material language of the space.",
+                    descExtra: "设计在最大限度地保障动线流畅度的同时，融合纺织产品与家具使空间更自然舒适。",
+                    descEnExtra: "The design aims to maximize the smooth flow of movement while integrating textile products and furniture to make the space more natural and comfortable.",
+                    images: [ 
+                             { url: "33.jpg", name: "木构" }, 
+                             { url: "37.jpg", name: "视觉海报" },
+                             { url: "32.jpg", name: "陈列" }, 
+                             { url: "35.jpg", name: "视觉海报" },
+                             { url: "38.jpg", name: "木构" } ],
+                    imagesBottom: [
+                             { url: "34.jpg", name: "陈列" },
+                             { url: "36.jpg", name: "空间" },
+                             { url: "39.jpg", name: "洽谈室" },]
                 },
                 { 
-                    zh: "都室·麓湖CPI快闪空间", en: "Dushi · Luhu CPI Pop-up Space", cat: "商业品牌", loc: "中国成都", yr: "2025.02", role: "Photographer", views: "19,600",
-                    desc: "城市建筑中的线条与几何。",
-                    images: [ { url: "4.jpg", name: "Steel Lines" }, { url: "3.jpg", name: "Glass Facade" }, { url: "2.jpg", name: "Concrete Rhythm" } ] 
+                    zh: "都室·麓湖CPI快闪空间", en: "Dushi · Luhu CPI Pop-up Space", 
+                    cat: "商业品牌", enCat: "Commercial Brand",
+                    loc: "中国成都", enLoc: "Chengdu, China",
+                    yr: "2025.02", role: "道具设计", views: "19,600",
+                    desc: "都室·麓湖CPI快闪空间以共享、开放、温度为设计核心，空间借用简单的色彩搭配让空间更具可识别性，同时搭配精巧的设计细节，让其更具趣味。",
+                    descEn: "The Dushi·Luhu CPI pop-up space is designed with sharing, openness, and warmth at its core. The space uses simple color combinations to enhance its recognizability and interest.",
+                    descExtra: "大面积落地玻璃引入自然光线，使服装在光影中更显自然柔和，结合室外定制化道具的休闲、展示、打卡功能，让空间充满体验性与功能性。",
+                    descEnExtra: "The extensive floor-to-ceiling glass introduces natural light, making the clothing appear more naturally soft in the interplay of light and shadow. Combined with the outdoor customized props for leisure, display, and photo opportunities, the space is filled with experiential and functional qualities.",
+                    images: [ 
+                             { url: "45.png", name: "立牌设计" }, 
+                             { url: "41.jpg", name: "入口陈列" },
+                             { url: "40.jpg", name: "摄影" },
+                             { url: "47.jpg", name: "道具装置" },],
+                    imagesBottom: [
+                             { url: "42.png", name: "摄影" },
+                             { url: "43.jpg", name: "道具装置" },
+                             { url: "44.jpg", name: "视觉平面" },
+                             { url: "46.jpg", name: "陈列" },
+]
                 },
                 { 
-                    zh: "DUSIT THANI · TIANMU MOUNTAIN", en: "DUSIT THANI", cat: "wayfinding system design", loc: "Hangzhou China", yr: "2022.7", role: "Photographer", views: "14,300",
-                    desc: "关于时间与记忆的视觉拼贴。",
-                    images: [ { url: "6.jpg", name: "Fading" }, { url: "1.jpg", name: "Echo" }, { url: "5.jpg", name: "Remnants" } ] 
+                    zh: "江南布衣LESS办公空间", en: "Jiangnan Buyi LESS Office Space", 
+                    cat: "商业品牌", enCat: "Commercial Brand",
+                    loc: "中国杭州", enLoc: "Hangzhou, China",
+                    yr: "2024.11", role: "辅案设计", views: "14,300",
+                    desc: "具体参考电子文档，此处暂无放置",
+                    descEn: "Please refer to the electronic document for details; nothing is placed here for now.",
+                    descExtra: "...",
+                    descEnExtra: "...",
+                    images: [],
+                    imagesBottom: []
                 }
             ];
 
@@ -1479,15 +1802,17 @@
                     card.style.marginRight = '40px';
                     // 不设置 onclick，使点击无效
                     card.innerHTML = `
-                        <div class="title title-zh">${placeholderItem.zh}</div>
-                        <div class="title title-en" style="display: none;">${placeholderItem.zh}</div>
+                        <div>
+                            <div class="title title-zh">${placeholderItem.zh}</div>
+                            <div class="title title-en" style="display: none;">${placeholderItem.zh}</div>
+                        </div>
                         <div class="metadata">
-                            <div>类型</div>
-                            <span>${placeholderItem.cat}</span>
-                            <div>Location</div>
-                            <span>${placeholderItem.loc}</span>
-                            <div>Time</div>
-                            <span>${placeholderItem.yr}</span>
+                            <div class="zh">类型</div><span class="zh">${placeholderItem.cat}</span>
+                            <div class="en" style="display: none;">Category</div><span class="en" style="display: none;">${placeholderItem.cat}</span>
+                            <div class="zh">Location</div><span class="zh">${placeholderItem.loc}</span>
+                            <div class="en" style="display: none;">Location</div><span class="en" style="display: none;">${placeholderItem.loc}</span>
+                            <div class="zh">Time</div><span class="zh">${placeholderItem.yr}</span>
+                            <div class="en" style="display: none;">Year</div><span class="en" style="display: none;">${placeholderItem.yr}</span>
                         </div>
                     `;
                     fragment.appendChild(card);
@@ -1521,46 +1846,65 @@
                 // 清空容器
                 DOM.collectionsGridTarget.innerHTML = '';
 
-                // 前两行固定尺寸模式（共6个卡片）- 使用真实项目数据
-                const fixedPattern = [
-                    // 第一行：普通、宽、宽
-                    { size: '' },      // 320x320
-                    { size: 'wide' },  // 480x320
-                    { size: 'wide' },  // 480x320
-                    // 第二行：高、高、普通
-                    { size: 'tall' },  // 320x480
-                    { size: 'tall' },  // 320x480
-                    { size: '' }       // 320x320
+                // 前8张卡片的尺寸模式及右边距（单位px）
+                const sizePattern = [
+                    { size: '' },      // 0: 普通 320×320
+                    { size: 'wide' },  // 1: 宽 480×320
+                    { size: 'wide' },  // 2: 宽
+                    { size: 'tall' },  // 3: 高 320×480
+                    { size: 'tall' },  // 4: 高
+                    { size: '' },      // 5: 普通
+                    { size: 'wide' },  // 6: 宽
+                    { size: '' }       // 7: 普通 (改为占位卡片)
                 ];
+                const marginRights = [40, 40, 0, 40, 40, 0, 40, 0];
 
-                // 定义每个卡片的右边距（单位px），索引与 fixedPattern 对应
-                const marginRights = [40, 40, 0, 40, 40, 0];
-
-                // 生成前6个固定卡片（真实项目）
-                for (let i = 0; i < fixedPattern.length; i++) {
-                    const randomIndex = Math.floor(Math.random() * collections.length);
-                    const item = collections[randomIndex];
-                    const sizeClass = fixedPattern[i].size;
+                // 生成前7张可点击卡片（真实项目数据）
+                for (let i = 0; i < 7; i++) {
+                    const item = collections[i];
+                    const sizeClass = sizePattern[i].size;
                     const card = document.createElement('div');
                     card.className = `grid-item ${sizeClass}`;
                     card.style.marginRight = marginRights[i] + 'px';
-                    card.setAttribute('onclick', `window.location.hash='project-${randomIndex}'`);
+                    card.setAttribute('onclick', `window.location.hash='project-${i}'`);
                     card.innerHTML = `
                         <div>
                             <div class="title title-zh">${item.zh}</div>
                             <div class="title title-en">${item.en}</div>
                         </div>
                         <div class="metadata">
-                            <div>类型</div>
-                            <span>${item.cat}</span>
-                            <div>区域</div>
-                            <span>${item.loc}</span>
-                            <div>时间</div>
-                            <span>${item.yr}</span>
+                            <div class="zh">类型</div><span class="zh">${item.cat}</span>
+                            <div class="en" style="display: none;">Category</div><span class="en" style="display: none;">${item.enCat}</span>
+                            <div class="zh">区域</div><span class="zh">${item.loc}</span>
+                            <div class="en" style="display: none;">Location</div><span class="en" style="display: none;">${item.enLoc}</span>
+                            <div class="zh">时间</div><span class="zh">${item.yr}</span>
+                            <div class="en" style="display: none;">Year</div><span class="en" style="display: none;">${item.yr}</span>
                         </div>
                     `;
                     DOM.collectionsGridTarget.appendChild(card);
                 }
+
+                // 第8张卡片（索引7）改为占位卡片，无点击事件
+                const sizeClass = sizePattern[7].size;
+                const placeholderCard = document.createElement('div');
+                placeholderCard.className = `grid-item ${sizeClass} placeholder`;
+                placeholderCard.style.marginRight = marginRights[7] + 'px';
+                // 不设置 onclick
+                placeholderCard.innerHTML = `
+                    <div>
+                        <div class="title title-zh">${placeholderItem.zh}</div>
+                        <div class="title title-en" style="display: none;">${placeholderItem.zh}</div>
+                    </div>
+                    <div class="metadata">
+                        <div class="zh">类型</div><span class="zh">${placeholderItem.cat}</span>
+                        <div class="en" style="display: none;">Category</div><span class="en" style="display: none;">${placeholderItem.cat}</span>
+                        <div class="zh">区域</div><span class="zh">${placeholderItem.loc}</span>
+                        <div class="en" style="display: none;">Location</div><span class="en" style="display: none;">${placeholderItem.loc}</span>
+                        <div class="zh">时间</div><span class="zh">${placeholderItem.yr}</span>
+                        <div class="en" style="display: none;">Year</div><span class="en" style="display: none;">${placeholderItem.yr}</span>
+                    </div>
+                `;
+                DOM.collectionsGridTarget.appendChild(placeholderCard);
 
                 // 强制换行
                 const breakDiv = document.createElement('div');
@@ -1569,11 +1913,11 @@
                 breakDiv.style.overflow = 'hidden';
                 DOM.collectionsGridTarget.appendChild(breakDiv);
 
-                // 追加随机卡片
+                // 追加占位卡片（无点击事件）
                 for (let i = 0; i < 7; i++) {
                     const sizeClass = sizeTypes[Math.floor(Math.random() * sizeTypes.length)];
                     const card = document.createElement('div');
-                    card.className = `grid-item ${sizeClass}`;
+                    card.className = `grid-item ${sizeClass} placeholder`;
                     card.style.marginRight = '40px';
                     card.innerHTML = `
                         <div>
@@ -1581,12 +1925,12 @@
                             <div class="title title-en" style="display: none;">${placeholderItem.zh}</div>
                         </div>
                         <div class="metadata">
-                            <div>Portfolio</div>
-                            <span>${placeholderItem.cat}</span>
-                            <div>Location</div>
-                            <span>${placeholderItem.loc}</span>
-                            <div>Time</div>
-                            <span>${placeholderItem.yr}</span>
+                            <div class="zh">类型</div><span class="zh">${placeholderItem.cat}</span>
+                            <div class="en" style="display: none;">Category</div><span class="en" style="display: none;">${placeholderItem.cat}</span>
+                            <div class="zh">区域</div><span class="zh">${placeholderItem.loc}</span>
+                            <div class="en" style="display: none;">Location</div><span class="en" style="display: none;">${placeholderItem.loc}</span>
+                            <div class="zh">时间</div><span class="zh">${placeholderItem.yr}</span>
+                            <div class="en" style="display: none;">Year</div><span class="en" style="display: none;">${placeholderItem.yr}</span>
                         </div>
                     `;
                     DOM.collectionsGridTarget.appendChild(card);
@@ -1617,17 +1961,37 @@
                     `;
                 }
 
-                // 描述
-                if (DOM.detDesc) DOM.detDesc.innerText = data.desc || '';
+                // 构建顶部图片 HTML
+                const topImagesHtml = (data.images || []).map(img => `
+                    <div class="gallery-item">
+                        <img src="${Utils.getImageUrl(img.url)}" alt="${img.name || data.en}" loading="lazy" onerror="this.src='${CONFIG.IMAGES.FALLBACK}';">
+                        <div class="gallery-caption">${img.name || ''}</div>
+                    </div>
+                `).join('');
 
-                // 图片画廊
+                // 构建底部图片 HTML
+                const bottomImagesHtml = (data.imagesBottom || []).map(img => `
+                    <div class="gallery-item">
+                        <img src="${Utils.getImageUrl(img.url)}" alt="${img.name || data.en}" loading="lazy" onerror="this.src='${CONFIG.IMAGES.FALLBACK}';">
+                        <div class="gallery-caption">${img.name || ''}</div>
+                    </div>
+                `).join('');
+
+                // 填充描述容器
+                if (DOM.detDesc) {
+                    DOM.detDesc.innerHTML = `
+                        <p class="detail-description">${data.desc}</p>
+                        <p class="detail-description-en">${data.descEn || 'English description will be added soon.'}</p>
+                        ${topImagesHtml}
+                        <p class="detail-description-extra">${data.descExtra || data.desc}</p>
+                        <p class="detail-description-extra-en">${data.descEnExtra || data.descEn || 'English description will be added soon.'}</p>
+                        ${bottomImagesHtml}
+                    `;
+                }
+
+                // 清空原图片容器（避免重复）
                 if (DOM.detImages) {
-                    DOM.detImages.innerHTML = data.images.map(img => `
-                        <div class="gallery-item">
-                            <img src="${Utils.getImageUrl(img.url)}" alt="${img.name || data.en}" loading="lazy" onerror="this.src='${CONFIG.IMAGES.FALLBACK}';">
-                            <div class="gallery-caption">${img.name || ''}</div>
-                        </div>
-                    `).join('');
+                    DOM.detImages.innerHTML = '';
                 }
 
                 // 页脚浏览量
@@ -2052,7 +2416,7 @@
                             }, 150);
                         }
                     });
-                }, 3000); // 每3秒切换一次
+                }, 1500); // 每3秒切换一次
             }
 
             // 停止轮播
