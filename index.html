@@ -1107,19 +1107,27 @@
                 -webkit-overflow-scrolling: touch;
             }
 
-            /* 欢迎页卡片垂直排列 */
+            /* 欢迎页卡片水平滚动 */
             .stax-cards {
-                flex-direction: column;
-                align-items: center;
+                flex-direction: row;
+                overflow-x: auto;
+                overflow-y: hidden;
                 padding: 20px;
                 width: 100%;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
             }
             .stax-card {
                 margin-left: 0;
-                margin-bottom: 20px;
-                width: 90%;
-                max-width: 300px;
+                margin-right: 15px;
+                width: 200px;
+                flex-shrink: 0;
+                scroll-snap-align: start;
                 transform: none !important;
+                margin-bottom: 0;
+            }
+            .stax-card:last-child {
+                margin-right: 20px;
             }
             .stax-card:hover {
                 transform: translateY(-10px) !important;
@@ -1128,12 +1136,33 @@
                 font-size: 2.5rem;
             }
 
-            /* 图片页 (LAB Studio) 调整 */
-            #image-page .lab-title-container {
-                margin-top: 20px;
+            /* 滑动提示 */
+            .swipe-hint-mobile {
+                display: block;
+                text-align: center;
+                margin-top: 10px;
+                font-size: 14px;
+                color: #666;
+                animation: breathe 2s infinite ease-in-out;
             }
+            .swipe-hint-mobile span::before {
+                content: '←';
+                margin-right: 8px;
+                font-size: 18px;
+            }
+            @keyframes breathe {
+                0% { opacity: 0.4; }
+                50% { opacity: 1; }
+                100% { opacity: 0.4; }
+            }
+
+            /* 图片页 (LAB Studio) 文字缩放 */
             #image-page .hero-title {
                 font-size: 15vw;
+                line-height: 1;
+            }
+            #image-page .lab-title-container .mt-4.max-w-xl p {
+                font-size: 1.2rem;
             }
             #image-page .folder-list-container {
                 width: 100%;
@@ -1141,6 +1170,14 @@
             #image-page .list-item {
                 font-size: 16px;
                 flex-wrap: wrap;
+                white-space: normal;
+            }
+            #image-page .list-item span:first-child {
+                width: 70%;
+            }
+            #image-page .list-item span:last-child {
+                width: 30%;
+                text-align: right;
             }
             #image-page .footer-line {
                 flex-direction: column;
@@ -1152,7 +1189,7 @@
                 text-align: left;
             }
 
-            /* 作品页 (第三页) 单列布局 */
+            /* 作品页 (第三页) 单列布局，项目标题缩小，左右对齐 */
             #works-page main {
                 grid-template-columns: 1fr;
                 gap: 20px;
@@ -1161,20 +1198,32 @@
             .project-list {
                 margin-left: 0;
                 padding: 0 20px;
+                width: 100%;
             }
             .project-item {
-                font-size: 20px;
+                font-size: 14px;
+                margin-bottom: 12px;
+            }
+            .project-item span {
+                font-size: 12px;
+                margin-right: 8px;
+            }
+            .more-dots {
+                font-size: 16px;
+                padding-left: 40px;
             }
             .fixed-pro {
                 display: none;
             }
             .details-wrapper {
                 height: auto;
-                max-height: 60vh;
+                max-height: 68vh; /* 调整为68vh */
+                width: 100%;
+                padding: 0 20px;  /* 与左侧对齐 */
             }
             .details-slide {
                 height: auto;
-                min-height: 400px;
+                min-height: 350px;
             }
             .details-header {
                 margin-top: 20px;
@@ -1247,22 +1296,25 @@
                 width: 100%;
             }
 
-            /* 导航栏调整 */
-            .navbar {
-                padding: 10px var(--desktop-padding);
+            /* 导航栏调整：移除 LOGO，让链接占满一行 */
+            .logo {
+                display: none;
             }
             .nav-container {
-                flex-direction: column;
-                align-items: flex-start;
+                justify-content: center;
             }
             .nav-links {
                 margin-right: 0;
-                flex-wrap: wrap;
-                gap: 15px;
-                margin-top: 10px;
+                width: 100%;
+                justify-content: space-around;
+                gap: 5px;
             }
-            .logo {
-                margin-left: 0;
+            .nav-links li {
+                font-size: 0.7rem;
+                padding: 5px 0;
+            }
+            .nav-links li .cn {
+                font-size: 10px;
             }
 
             /* 时钟位置 */
@@ -1339,6 +1391,8 @@
             <div class="stax-card email is-future">EMAIL <span class="card-zh">加载中</span><div class="watermark"></div></div>
             <div class="stax-card resume is-future"><span class="card-zh"></span><div class="watermark">RE<br>SU<br>ME</div></div>
         </div>
+        <!-- 手机端滑动提示 -->
+        <div class="swipe-hint-mobile"><span>可向左滑动</span></div>
     </div>
 
     <!-- 图片页 (LAB Studio) -->
@@ -2416,7 +2470,7 @@
                             }, 150);
                         }
                     });
-                }, 1500); // 每3秒切换一次
+                }, 1500); // 每1.5秒切换一次
             }
 
             // 停止轮播
